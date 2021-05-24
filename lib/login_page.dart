@@ -3,6 +3,7 @@ import 'package:happen_link/home_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:happen_link/widgets/password_field.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'consts.dart' as Consts;
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login-list';
@@ -12,8 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController ctrlEmail;
-  TextEditingController ctrlPwd;
+  final TextEditingController ctrlEmail = TextEditingController();
+  final TextEditingController ctrlPwd = TextEditingController();
   bool _saving = false;
 
   void loginClicked() async {
@@ -40,16 +41,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  void initState() {
-    ctrlEmail = new TextEditingController();
-    ctrlPwd = new TextEditingController();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LoadingOverlay(
+        isLoading: _saving,
+        color: Consts.LOADING_OVERLAY_COLOR,
         child: Container(
           constraints: BoxConstraints.expand(),
           decoration: BoxDecoration(
@@ -102,8 +98,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        isLoading: _saving,
-        color: Colors.black,
       ),
     );
   }

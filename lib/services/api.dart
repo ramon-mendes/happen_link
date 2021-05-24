@@ -1,11 +1,17 @@
 import 'dart:convert';
 
+import 'package:happen_link/apimodels/deck.dart';
 import 'package:happen_link/apimodels/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-const API_URL = "happenlinkbackend.azurewebsites.net";
+const API_URL = 'happenlinkbackend.azurewebsites.net';
+const PREFERENCES = 'logged_user';
 
 class API {
+  static String _token;
+  static Map<String, String> _headers;
+
   static void logout() {}
 
   static Future<User> login(String email, String pwd) async {
@@ -16,9 +22,45 @@ class API {
     final response = await http.get(Uri.https(API_URL, "api/user/login", queryParameters));
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(PREFERENCES, response.body);
+
+      var user = User.fromJson(jsonDecode(response.body));
+      _token = user.token;
+      _headers = {'Authorization': 'Bearer $_token'};
+      return user;
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load');
     }
   }
+
+  static Future<List<Deck>> deckList() async {
+    final response = await http.get(Uri.https(API_URL, "api/deck/list"), headers: _headers);
+    if (response.statusCode == 200) {
+      var all = jsonDecode(response.body);
+      var list = <Deck>[];
+      for (var item in all) {
+        list.add(Deck.fromJson(item));
+      }
+      return list;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
+  static Future<void> deckCreate(String title) async {
+    final response = await http.post(
+      Uri.https(API_URL, "api/deck/create"),
+      headers: _headers,
+      body: Deck(title: title),
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
+  //static Future<List<Deck>> flashcardUpdateCreate() async {}
 }
