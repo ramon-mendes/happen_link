@@ -5,6 +5,7 @@ import 'consts.dart' as Consts;
 
 class DeckAddPage extends StatefulWidget {
   static const routeName = '/deckaddpage';
+
   @override
   _DeckAddPageState createState() => _DeckAddPageState();
 }
@@ -32,10 +33,9 @@ class _DeckAddPageState extends State<DeckAddPage> {
               children: <Widget>[
                 Text('Título:'),
                 TextFormField(
-                  // The validator receives the text that the user has entered.
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
+                      return 'Por favor insira o título';
                     }
                     return null;
                   },
@@ -49,7 +49,11 @@ class _DeckAddPageState extends State<DeckAddPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        API.deckCreate(_txtFieldCtrl.text).then((value) => null);
+                        API.deckCreate(_txtFieldCtrl.text).then((value) {
+                          final snackBar = SnackBar(content: Text('Deck criado com sucesso.'));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          Navigator.of(context).pop();
+                        });
                       }
                     },
                     child: Text('Criar'),

@@ -4,6 +4,9 @@ import 'package:happen_link/services/api.dart';
 import 'package:happen_link/color_loader_4.dart';
 
 import 'apimodels/deck.dart';
+import 'dart:developer';
+
+import 'deck_show_page.dart';
 
 class DecksPage extends StatefulWidget {
   static const routeName = '/deckspage';
@@ -18,7 +21,11 @@ class _DecksPageState extends State<DecksPage> {
   @override
   void initState() {
     super.initState();
+    print('initState');
+    reloadData();
+  }
 
+  void reloadData() {
     API.deckList().then((value) => this.setState(() {
           _cache = value;
         }));
@@ -33,8 +40,9 @@ class _DecksPageState extends State<DecksPage> {
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Adicionnar deck',
-            onPressed: () {
-              Navigator.of(context).pushNamed(DeckAddPage.routeName);
+            onPressed: () async {
+              await Navigator.of(context).pushNamed(DeckAddPage.routeName);
+              reloadData();
             },
           ),
         ],
@@ -57,55 +65,59 @@ class _DecksPageState extends State<DecksPage> {
         height: 1,
       ),
       itemCount: _cache.length,
-      itemBuilder: (BuildContext context, int index) => _buildListItem(_cache[index]),
+      itemBuilder: (BuildContext context, int index) => _buildListItem(_cache[index], context),
     );
   }
 
-  Widget _buildListItem(Deck deck) {
-    return Container(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(13.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(deck.title, style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(
-                        'Cartas novas: ',
-                        style: TextStyle(color: Color(0xff7E7E7E)),
-                      ),
-                      Text(
-                        '${deck.cntNew}',
-                        style: TextStyle(color: Color(0xff3c2dc4)),
-                      ),
-                    ],
+  Widget _buildListItem(Deck deck, BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(DeckShowPage.routeName, arguments: deck);
+      },
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(13.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(deck.title, style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          'Cartas novas: ',
+                          style: TextStyle(color: Color(0xff7E7E7E)),
+                        ),
+                        Text(
+                          '${deck.cntNew}',
+                          style: TextStyle(color: Color(0xff3c2dc4)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(
-                        'Cartas antigas: ',
-                        style: TextStyle(color: Color(0xff7E7E7E)),
-                      ),
-                      Text(
-                        '${deck.cntOld}',
-                        style: TextStyle(color: Color(0xffc42d2d)),
-                      ),
-                    ],
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          'Cartas antigas: ',
+                          style: TextStyle(color: Color(0xff7E7E7E)),
+                        ),
+                        Text(
+                          '${deck.cntOld}',
+                          style: TextStyle(color: Color(0xffc42d2d)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -34,6 +34,12 @@ class API {
     }
   }
 
+  static Map<String, String> jsonHeader() {
+    var copy = Map<String, String>.from(_headers);
+    copy['Content-Type'] = 'application/json';
+    return copy;
+  }
+
   static Future<List<Deck>> deckList() async {
     final response = await http.get(Uri.https(API_URL, "api/deck/list"), headers: _headers);
     if (response.statusCode == 200) {
@@ -49,10 +55,13 @@ class API {
   }
 
   static Future<void> deckCreate(String title) async {
+    Map<String, String> data = {
+      "title": title,
+    };
     final response = await http.post(
       Uri.https(API_URL, "api/deck/create"),
-      headers: _headers,
-      body: Deck(title: title),
+      headers: jsonHeader(),
+      body: jsonEncode(data),
     );
 
     if (response.statusCode == 200) {
