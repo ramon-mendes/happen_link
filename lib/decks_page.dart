@@ -39,7 +39,7 @@ class _DecksPageState extends State<DecksPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            tooltip: 'Adicionnar deck',
+            tooltip: 'Adicionar deck',
             onPressed: () async {
               await Navigator.of(context).pushNamed(DeckAddPage.routeName);
               reloadData();
@@ -71,8 +71,9 @@ class _DecksPageState extends State<DecksPage> {
 
   Widget _buildListItem(Deck deck, BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(context).pushNamed(DeckShowPage.routeName, arguments: deck);
+      onTap: () async {
+        await Navigator.of(context).pushNamed(DeckShowPage.routeName, arguments: deck);
+        reloadData();
       },
       child: Container(
         child: Padding(

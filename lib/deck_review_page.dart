@@ -45,13 +45,23 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
       }
 
       loading = false; // for next
-      goToNextFlashcard();
+      goToNextFlashcard(context);
     });
   }
 
-  void goToNextFlashcard() {
+  void goToNextFlashcard(BuildContext context) {
     currentFlashcard = getNextFlashcard();
-    if (currentFlashcard == null) {}
+    if (currentFlashcard == null) {
+      // go to ReviewDone page
+      API.fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
+        Navigator.of(context).pushNamedAndRemoveUntil(DeckReviewDone.routeName, (route) => false);
+      });
+    } else {
+      // show next flashcard
+      setState(() {
+        frontView = true;
+      });
+    }
   }
 
   Flashcard getNextFlashcard() {
@@ -86,6 +96,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   Widget build(BuildContext context) {
     deck = ModalRoute.of(context).settings.arguments as Deck;
 
+    // Loading
     if (loading) {
       loadReviewList(context);
 
@@ -94,10 +105,69 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
         child: Container(),
       );
     }
+
+    // Frontview
     if (frontView) {
-      return Container();
+      return Column(
+        children: [
+          Column(
+            children: [
+              Text(currentFlashcard.front),
+              Image.network(currentFlashcard.media.imageFrontURL),
+            ],
+          ),
+          Material(
+            color: Colors.teal,
+            child: InkWell(
+              child: Text('Mostrar resposta'),
+              onTap: () {},
+            ),
+          ),
+        ],
+      );
     }
 
-    return Container();
+    // Backview
+    return Column(
+      children: [
+        Column(
+          children: [
+            Text(currentFlashcard.back),
+            Image.network(currentFlashcard.media.imageBackURL),
+          ],
+        ),
+        Row(
+          children: [
+            Material(
+              color: Colors.teal,
+              child: InkWell(
+                child: Column(
+                  children: [Text('< 1 min'), Text('NOVAMENTE')],
+                ),
+                onTap: () {},
+              ),
+            ),
+            Material(
+              color: Colors.teal,
+              child: InkWell(
+                child: Column(
+                  children: [Text('< 10 min'), Text('BOM')],
+                ),
+                onTap: () {},
+              ),
+            ),
+            Material(
+              color: Colors.teal,
+              child: InkWell(
+                child: Column(
+                  children: [Text('4 d'), Text('FÁCIL')],
+                ),
+                onTap: () {},
+              ),
+            ),
+          ],
+        )
+      ],
+    );
   }
 }

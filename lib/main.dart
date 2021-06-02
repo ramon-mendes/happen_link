@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/deck_add_page.dart';
+import 'package:happen_link/deck_review_done.dart';
 import 'package:happen_link/deck_review_page.dart';
 import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/decks_page.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         DeckAddPage.routeName: (BuildContext context) => DeckAddPage(),
         DeckShowPage.routeName: (BuildContext context) => DeckShowPage(),
         DeckReviewPage.routeName: (BuildContext context) => DeckReviewPage(),
+        DeckReviewDone.routeName: (BuildContext context) => DeckReviewDone(),
       },
     );
   }

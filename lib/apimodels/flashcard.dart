@@ -1,14 +1,20 @@
 class FlashcardMedia {
   String imageFrontURL;
   String imageBackURL;
-  String audio1Base64;
-  String audio2Base64;
+  String audioBase64;
 
   FlashcardMedia.fromJson(Map<String, dynamic> json) {
     imageFrontURL = json['imageFrontURL'];
     imageBackURL = json['imageBackURL'];
-    audio1Base64 = json['audio1Base64'];
-    audio2Base64 = json['audio2Base64'];
+    audioBase64 = json['audioBase64'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['audioBase64'] = this.audioBase64;
+    data['imageFrontURL'] = this.imageFrontURL;
+    data['imageBackURL'] = this.imageBackURL;
+    return data;
   }
 }
 
@@ -27,5 +33,17 @@ class Flashcard {
     front = json['front'];
     back = json['back'];
     media = FlashcardMedia.fromJson(json['media']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deckId'] = this.deckId;
+    data['front'] = this.front;
+    data['back'] = this.back;
+    if (this.media != null) {
+      data['media'] = this.media.toJson();
+    }
+    return data;
   }
 }
