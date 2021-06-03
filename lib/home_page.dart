@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/decks_page.dart';
-import 'package:happen_link/procedures_page.dart';
+import 'package:happen_link/procedure_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/homepage';
@@ -14,81 +14,102 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: UnconstrainedBox(
+                  child: Container(
+                    width: 280,
+                    child: Image(
+                      image: AssetImage('assets/logo.png'),
+                    ),
+                  ),
+                ),
               ),
-              elevation: 5,
-              child: Ink.image(
-                image: const AssetImage('assets/crane_card.png'),
-                fit: BoxFit.cover,
-                width: 300.0,
-                height: 200.0,
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                elevation: 2,
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).pushNamed(DecksPage.routeName);
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(14.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Decks',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text('Flashcards para você revisar seu conhecimento'),
-                      ],
+                  child: Container(
+                    height: 115,
+                    child: Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Deck',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text('Flashcards para você revisar seu conhecimento'),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+              SizedBox(
+                height: 10,
               ),
-              elevation: 5,
-              child: Ink.image(
-                image: const AssetImage('assets/rally_card.png'),
-                fit: BoxFit.cover,
-                width: 300.0,
-                height: 200.0,
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                elevation: 2,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).pushNamed(ProceduresPage.routeName);
+                    Navigator.of(context).pushNamed(ProcedurePage.routeName);
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(14.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Procedimentos',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text('Instruções passo-a-passo de tarefas conhecidas'),
-                      ],
+                  child: Container(
+                    height: 115,
+                    child: Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Procedimentos',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text('Instruções passo-a-passo de tarefas conhecidas'),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Text(''),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('v12'),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text('Logout'),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

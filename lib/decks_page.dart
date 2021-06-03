@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/deck_add_page.dart';
+import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:happen_link/color_loader_4.dart';
 
 import 'apimodels/deck.dart';
-import 'dart:developer';
-
-import 'deck_show_page.dart';
 
 class DecksPage extends StatefulWidget {
   static const routeName = '/deckspage';
@@ -21,7 +19,6 @@ class _DecksPageState extends State<DecksPage> {
   @override
   void initState() {
     super.initState();
-    print('initState');
     reloadData();
   }
 

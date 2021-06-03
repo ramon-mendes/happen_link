@@ -4,6 +4,7 @@ import 'package:happen_link/apimodels/flashcard.dart';
 import 'package:happen_link/apimodels/review.dart';
 import 'package:happen_link/classes/sm.dart';
 import 'package:happen_link/deck_review_done.dart';
+import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'dart:math';
@@ -54,7 +55,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     if (currentFlashcard == null) {
       // go to ReviewDone page
       API.fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
-        Navigator.of(context).pushNamedAndRemoveUntil(DeckReviewDone.routeName, (route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil(DeckReviewDone.routeName, (route) => route is DeckShowPage);
       });
     } else {
       // show next flashcard
@@ -108,66 +109,128 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
 
     // Frontview
     if (frontView) {
-      return Column(
-        children: [
-          Column(
-            children: [
-              Text(currentFlashcard.front),
-              Image.network(currentFlashcard.media.imageFrontURL),
-            ],
-          ),
-          Material(
-            color: Colors.teal,
-            child: InkWell(
-              child: Text('Mostrar resposta'),
-              onTap: () {},
+      return Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(currentFlashcard.front),
+                  ),
+                  currentFlashcard.media.imageFrontURL == null
+                      ? Container()
+                      : Image.network(currentFlashcard.media.imageFrontURL),
+                ],
+              ),
             ),
-          ),
-        ],
+            Material(
+              color: Color(0xff465a65),
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Center(
+                      child: Text(
+                    'Mostrar resposta',
+                    style: TextStyle(color: Colors.white),
+                  )),
+                ),
+                onTap: () {
+                  setState(() {
+                    frontView = false;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
       );
     }
 
     // Backview
-    return Column(
-      children: [
-        Column(
-          children: [
-            Text(currentFlashcard.back),
-            Image.network(currentFlashcard.media.imageBackURL),
-          ],
-        ),
-        Row(
-          children: [
-            Material(
-              color: Colors.teal,
-              child: InkWell(
-                child: Column(
-                  children: [Text('< 1 min'), Text('NOVAMENTE')],
-                ),
-                onTap: () {},
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(currentFlashcard.back),
+                  ),
+                  currentFlashcard.media.imageBackURL == null
+                      ? Container()
+                      : Image.network(currentFlashcard.media.imageBackURL),
+                ],
               ),
             ),
-            Material(
-              color: Colors.teal,
-              child: InkWell(
-                child: Column(
-                  children: [Text('< 10 min'), Text('BOM')],
+          ),
+
+          // 3 buttons
+          Row(
+            children: [
+              Expanded(
+                child: Material(
+                  color: Color(0xffd92121),
+                  child: InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [Text('< 1 min'), Text('NOVAMENTE')],
+                      ),
+                    ),
+                    onTap: () {
+                      reviewFlashcard(0);
+                      goToNextFlashcard(context);
+                    },
+                  ),
                 ),
-                onTap: () {},
               ),
-            ),
-            Material(
-              color: Colors.teal,
-              child: InkWell(
-                child: Column(
-                  children: [Text('4 d'), Text('FÁCIL')],
+              Expanded(
+                child: Material(
+                  color: Color(0xff35c672),
+                  child: InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [Text('< 10 min'), Text('BOM')],
+                      ),
+                    ),
+                    onTap: () {
+                      reviewFlashcard(3);
+                      goToNextFlashcard(context);
+                    },
+                  ),
                 ),
-                onTap: () {},
               ),
-            ),
-          ],
-        )
-      ],
+              Expanded(
+                child: Material(
+                  color: Color(0xff9a88f3),
+                  child: InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [Text('4 d'), Text('FÁCIL')],
+                      ),
+                    ),
+                    onTap: () {
+                      reviewFlashcard(5);
+                      goToNextFlashcard(context);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

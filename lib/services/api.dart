@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:happen_link/apimodels/deck.dart';
+import 'package:happen_link/apimodels/procedure.dart';
+import 'package:happen_link/apimodels/procedureitem.dart';
 import 'package:happen_link/apimodels/review.dart';
 import 'package:happen_link/apimodels/user.dart';
 import 'package:http/http.dart' as http;
@@ -84,24 +86,51 @@ class API {
   static Future<ReviewList> fcGetReviewList(String id) async {
     final response = await http.get(Uri.https(API_URL, "api/flashcard/getreviewlist", {'id': id}), headers: _headers);
     if (response.statusCode == 200) {
+      print(response.body);
       return ReviewList.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load');
     }
   }
 
-  static Future<ReviewList> fcCommitReview(ReviewCommit commit) async {
+  static Future<void> fcCommitReview(ReviewCommit commit) async {
     final response = await http.post(
       Uri.https(API_URL, "api/flashcard/commitreview"),
       headers: jsonHeader(),
       body: jsonEncode(commit.toJson()),
     );
     if (response.statusCode == 200) {
-      return ReviewList.fromJson(jsonDecode(response.body));
+      return;
     } else {
       throw Exception('Failed to load');
     }
   }
 
-  //static Future<List<Deck>> flashcardUpdateCreate() async {}
+  static Future<List<Procedure>> procedureList() async {
+    final response = await http.get(Uri.https(API_URL, "api/procedure/list"), headers: _headers);
+    if (response.statusCode == 200) {
+      var all = jsonDecode(response.body);
+      var list = <Procedure>[];
+      for (var item in all) {
+        list.add(Procedure.fromJson(item));
+      }
+      return list;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
+  static Future<List<ProcedureItem>> procedureListItens(String id) async {
+    final response = await http.get(Uri.https(API_URL, "api/procedure/getitens", {'id': id}), headers: _headers);
+    if (response.statusCode == 200) {
+      var all = jsonDecode(response.body);
+      var list = <ProcedureItem>[];
+      for (var item in all) {
+        list.add(ProcedureItem.fromJson(item));
+      }
+      return list;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
 }

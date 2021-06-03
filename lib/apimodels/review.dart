@@ -26,13 +26,13 @@ class ReviewList {
 
   ReviewList.fromJson(Map<String, dynamic> json) {
     if (json['flashcards'] != null) {
-      flashcards = List<Flashcard>.empty();
+      flashcards = <Flashcard>[];
       json['flashcards'].forEach((v) {
         flashcards.add(new Flashcard.fromJson(v));
       });
     }
     if (json['factors'] != null) {
-      factors = List<FlahscardReviewFactor>.empty();
+      factors = <FlahscardReviewFactor>[];
       json['factors'].forEach((v) {
         factors.add(new FlahscardReviewFactor.fromJson(v));
       });
