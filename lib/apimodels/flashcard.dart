@@ -1,21 +1,21 @@
 class FlashcardMedia {
-  String imageFrontURL;
-  String imageBackURL;
-  String audioBase64;
+  List<String> imagesFrontURL;
+  List<String> imagesBackURL;
+  List<String> audioBase64;
 
   FlashcardMedia();
 
   FlashcardMedia.fromJson(Map<String, dynamic> json) {
-    imageFrontURL = json['imageFrontURL'];
-    imageBackURL = json['imageBackURL'];
+    imagesFrontURL = json['imagesFrontURL'];
+    imagesBackURL = json['imagesBackURL'];
     audioBase64 = json['audioBase64'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['audioBase64'] = this.audioBase64;
-    data['imageFrontURL'] = this.imageFrontURL;
-    data['imageBackURL'] = this.imageBackURL;
+    data['imagesFrontURL'] = this.imagesFrontURL;
+    data['imagesBackURL'] = this.imagesBackURL;
     return data;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
 
@@ -32,7 +33,9 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(widget.fc.front ?? ''),
                 ),
-                widget.fc.media.imageFrontURL == null ? Container() : Image.network(widget.fc.media.imageFrontURL),
+                widget.fc.media.imagesFrontURL.length == 0
+                    ? Container()
+                    : _imagesCarousel(widget.fc.media.imagesFrontURL),
               ],
             ),
           ),
@@ -75,7 +78,9 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-                widget.fc.media.imageBackURL == null ? Container() : Image.network(widget.fc.media.imageBackURL),
+                widget.fc.media.imagesBackURL.length == 0
+                    ? Container()
+                    : _imagesCarousel(widget.fc.media.imagesBackURL),
               ],
             ),
           ),
@@ -101,6 +106,13 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _imagesCarousel(List<String> imgs) {
+    return CarouselSlider(
+      items: imgs.map((e) => Image.network(e)).toList(),
+      options: CarouselOptions(),
     );
   }
 }

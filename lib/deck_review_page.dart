@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/deck.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
@@ -37,11 +38,11 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
       for (var item in flashcards) {
         factors[item] = review.factors[i++];
 
-        if (item.media.imageFrontURL != null) {
-          precacheImage(NetworkImage(item.media.imageFrontURL), context);
+        for (var img in item.media.imagesBackURL) {
+          precacheImage(NetworkImage(img), context);
         }
-        if (item.media.imageBackURL != null) {
-          precacheImage(NetworkImage(item.media.imageBackURL), context);
+        for (var img in item.media.imagesBackURL) {
+          precacheImage(NetworkImage(img), context);
         }
       }
 
@@ -121,9 +122,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(currentFlashcard.front),
                   ),
-                  currentFlashcard.media.imageFrontURL == null
+                  currentFlashcard.media.imagesFrontURL.length == 0
                       ? Container()
-                      : Image.network(currentFlashcard.media.imageFrontURL),
+                      : _imagesCarousel(currentFlashcard.media.imagesFrontURL),
                 ],
               ),
             ),
@@ -165,9 +166,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(currentFlashcard.back),
                   ),
-                  currentFlashcard.media.imageBackURL == null
+                  currentFlashcard.media.imagesBackURL.length == 0
                       ? Container()
-                      : Image.network(currentFlashcard.media.imageBackURL),
+                      : _imagesCarousel(currentFlashcard.media.imagesBackURL),
                 ],
               ),
             ),
@@ -231,6 +232,13 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _imagesCarousel(List<String> imgs) {
+    return CarouselSlider(
+      items: imgs.map((e) => Image.network(e)).toList(),
+      options: CarouselOptions(),
     );
   }
 }

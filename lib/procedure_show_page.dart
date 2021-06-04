@@ -20,7 +20,6 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
   WebViewController _wvcontroller;
   CarouselController _crcontroller = CarouselController();
   Procedure _procedure;
-  CarouselSlider _carousel;
   List<ProcedureItem> _data;
   int _idx = 0;
 
@@ -47,7 +46,7 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
       );
     }
 
-    _carousel = CarouselSlider(
+    var carousel = CarouselSlider(
       items: _data.map((item) => _getItemView(item)).toList(),
       options: CarouselOptions(
         autoPlay: false,
@@ -81,8 +80,8 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
         ],
       ),
       body: Container(
-        color: Colors.green,
-        child: _carousel,
+        color: Colors.white,
+        child: carousel,
       ),
     );
   }
@@ -90,7 +89,30 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
   Widget _getItemView(ProcedureItem item) {
     // Step
     if (item.type == 0) {
-      var html = '''<html>
+      var html = '''<html><body>
+<style>
+body {
+	margin: 20px 10px;
+	font-family: sans-serif;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+#title {
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+ul {
+  padding-left: 24px;
+}</style>
+<div id="title">${item.step.title}</div>
+${item.step.html}
+      </body>
 </html>''';
 
       return WebView(
@@ -101,9 +123,11 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
             _wvcontroller.loadUrl(Uri.dataFromString(
               html,
               mimeType: 'text/html',
+              encoding: Encoding.getByName('utf-8'),
             ).toString());
           });
     }
+
     // Flashcard
     else {
       return ProcedureFlashcard(item.flashcard);

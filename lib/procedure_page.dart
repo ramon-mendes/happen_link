@@ -83,7 +83,14 @@ class _ProcedurePageState extends State<ProcedurePage> {
         child: Padding(
           padding: EdgeInsets.all(15),
           child: Row(
-            children: [Text('${procedure.title}')],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('${procedure.title}'),
+              Text(
+                '${procedure.stepCnt} etapas',
+                style: TextStyle(color: Color(0xff3c2dc4)),
+              ),
+            ],
           ),
         ),
       ),
