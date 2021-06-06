@@ -13,8 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController ctrlEmail = TextEditingController();
-  final TextEditingController ctrlPwd = TextEditingController();
+  final TextEditingController ctrlEmail = TextEditingController(text: 'ramon@misoftware.com.br');
+  final TextEditingController ctrlPwd = TextEditingController(text: 'SEnha123');
   bool _saving = false;
 
   void loginClicked() async {
@@ -41,11 +41,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LoadingOverlay(
         isLoading: _saving,
         color: Consts.LOADING_OVERLAY_COLOR,
+        progressIndicator: Consts.LOADING_INDICATOR,
         child: Container(
           constraints: BoxConstraints.expand(),
           decoration: BoxDecoration(

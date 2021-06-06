@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/decks_page.dart';
 import 'package:happen_link/procedure_page.dart';
+import 'package:package_info/package_info.dart';
+
+import 'consts.dart' as Consts;
 
 class HomePage extends StatefulWidget {
   static const routeName = '/homepage';
@@ -10,25 +13,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String _versionCode = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      String appName = packageInfo.appName;
+      String packageName = packageInfo.packageName;
+      String version = packageInfo.version;
+      String buildNumber = packageInfo.buildNumber;
+
+      setState(() {
+        _versionCode = 'v$buildNumber';
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffFAFAFA),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SizedBox(
+                height: 40,
+              ),
               Expanded(
                 child: UnconstrainedBox(
                   child: Container(
-                    width: 280,
+                    width: 270,
                     child: Image(
                       image: AssetImage('assets/logo.png'),
                     ),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 30,
               ),
               Card(
                 shape: RoundedRectangleBorder(
@@ -40,21 +68,23 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context).pushNamed(DecksPage.routeName);
                   },
                   child: Container(
-                    height: 115,
+                    height: 130,
                     child: Padding(
-                      padding: const EdgeInsets.all(14.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Deck',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 20, color: Consts.LOGIN_TXT_COLOR),
                           ),
                           SizedBox(
                             height: 8,
                           ),
-                          Text('Flashcards para você revisar seu conhecimento'),
+                          Text('Flashcards para você revisar seu conhecimento',
+                              style:
+                                  TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Consts.LOGIN_TXT_COLOR)),
                         ],
                       ),
                     ),
@@ -62,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 8,
               ),
               Card(
                 shape: RoundedRectangleBorder(
@@ -74,21 +104,20 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context).pushNamed(ProcedurePage.routeName);
                   },
                   child: Container(
-                    height: 115,
+                    height: 130,
                     child: Padding(
-                      padding: const EdgeInsets.all(14.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Procedimentos',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                          Text('Procedimentos', style: TextStyle(fontSize: 20, color: Consts.LOGIN_TXT_COLOR)),
                           SizedBox(
                             height: 8,
                           ),
-                          Text('Instruções passo-a-passo de tarefas conhecidas'),
+                          Text('Instruções passo-a-passo de tarefas conhecidas',
+                              style:
+                                  TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Consts.LOGIN_TXT_COLOR)),
                         ],
                       ),
                     ),
@@ -101,10 +130,10 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('v12'),
+                  Text(_versionCode, style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
                   GestureDetector(
                     onTap: () {},
-                    child: Text('Logout'),
+                    child: Text('Logout', style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
                   )
                 ],
               ),

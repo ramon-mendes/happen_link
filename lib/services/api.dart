@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:happen_link/apimodels/deck.dart';
+import 'package:happen_link/apimodels/flashcard.dart';
 import 'package:happen_link/apimodels/procedure.dart';
 import 'package:happen_link/apimodels/procedureitem.dart';
 import 'package:happen_link/apimodels/review.dart';
@@ -83,6 +84,15 @@ class API {
     }
   }
 
+  static Future<void> deckReset(String id) async {
+    final response = await http.get(Uri.https(API_URL, "api/deck/reset", {'id': id}), headers: _headers);
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
   static Future<ReviewList> fcGetReviewList(String id) async {
     final response = await http.get(Uri.https(API_URL, "api/flashcard/getreviewlist", {'id': id}), headers: _headers);
     if (response.statusCode == 200) {
@@ -98,6 +108,22 @@ class API {
       Uri.https(API_URL, "api/flashcard/commitreview"),
       headers: jsonHeader(),
       body: jsonEncode(commit.toJson()),
+    );
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
+  static Future<void> fcCreate(Flashcard model) async {
+    final body = model.toJson();
+    body.remove('id'); // fuck
+
+    final response = await http.post(
+      Uri.https(API_URL, "api/flashcard/create"),
+      headers: jsonHeader(),
+      body: jsonEncode(body),
     );
     if (response.statusCode == 200) {
       return;
@@ -129,6 +155,17 @@ class API {
         list.add(ProcedureItem.fromJson(item));
       }
       return list;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
+  static Future<bool> procedureImportFlashcard(String id /*Flashcard id*/) async {
+    final response =
+        await http.get(Uri.https(API_URL, "api/procedure/import_flashcard", {'id': id}), headers: _headers);
+    if (response.statusCode == 200) {
+      var b = jsonDecode(response.body);
+      return b;
     } else {
       throw Exception('Failed to load');
     }

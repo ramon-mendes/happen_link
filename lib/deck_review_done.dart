@@ -15,7 +15,7 @@ class DeckReviewDone extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
             child: Lottie.asset('assets/complete.json'),
           ),
-          Text('Revisão do deck concluída!'),
+          Text('Revisão do deck concluída!', style: TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );

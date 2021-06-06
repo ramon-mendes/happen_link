@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/deck_add_page.dart';
+import 'package:happen_link/deck_audio_edit_page.dart';
 import 'package:happen_link/deck_edit_flashcard_page.dart';
 import 'package:happen_link/deck_review_done.dart';
 import 'package:happen_link/deck_review_page.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tela login',
+      title: 'Happen Link',
       theme: ThemeData(primarySwatch: Colors.teal, accentColor: Colors.black),
       routes: {
         '/': (BuildContext context) => LoginPage(),
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         DeckReviewPage.routeName: (BuildContext context) => DeckReviewPage(),
         DeckReviewDone.routeName: (BuildContext context) => DeckReviewDone(),
         DeckEditFlashcardPage.routeName: (BuildContext context) => DeckEditFlashcardPage(),
+        DeckAudioEditPage.routeName: (BuildContext context) => DeckAudioEditPage(),
       },
     );
   }

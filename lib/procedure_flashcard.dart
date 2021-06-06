@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
+import 'package:happen_link/services/api.dart';
+import 'package:lottie/lottie.dart';
 
 class ProcedureFlashcard extends StatefulWidget {
-  Flashcard fc;
+  final Flashcard fc;
 
   ProcedureFlashcard(this.fc);
 
@@ -16,9 +18,34 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
   bool addedView = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    for (var img in widget.fc.media.imagesFrontURL) {
+      precacheImage(NetworkImage(img), context);
+    }
+    for (var img in widget.fc.media.imagesBackURL) {
+      precacheImage(NetworkImage(img), context);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Done view
-    if (addedView) {}
+    if (addedView) {
+      return Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 30),
+              child: Lottie.asset('assets/success_confetti_lottie.json'),
+            ),
+            Text('Flashcard adicionado ao deck Procedimentos!', style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      );
+    }
 
     // Frontview
     if (frontView) {
@@ -98,7 +125,14 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
                 style: TextStyle(color: Colors.white),
               )),
             ),
-            onTap: () {
+            onTap: () async {
+              var res = await API.procedureImportFlashcard(widget.fc.id);
+              if (!res) {
+                final snackBar = SnackBar(
+                    content: Text('Este flashcard já está no seu deck de Procedimentos.'), backgroundColor: Colors.red);
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                return;
+              }
               setState(() {
                 addedView = true;
               });
@@ -112,7 +146,9 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
   Widget _imagesCarousel(List<String> imgs) {
     return CarouselSlider(
       items: imgs.map((e) => Image.network(e)).toList(),
-      options: CarouselOptions(),
+      options: CarouselOptions(
+        enableInfiniteScroll: false,
+      ),
     );
   }
 }

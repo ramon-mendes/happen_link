@@ -78,7 +78,16 @@ class _DecksPageState extends State<DecksPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(deck.title, style: TextStyle(fontWeight: FontWeight.bold)),
+              Row(
+                children: [
+                  Text(deck.title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(width: 6),
+                  Icon(
+                    deck.fromUser ? Icons.person : Icons.share,
+                    size: 16,
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 10,
               ),

@@ -29,6 +29,7 @@ class _DeckShowPageState extends State<DeckShowPage> {
             PopupMenuButton<String>(
                 onSelected: (val) {
                   if (val == '1') {
+                    // rmv deck
                     // set up the buttons
                     Widget cancelButton = TextButton(
                       child: Text("Cancelar"),
@@ -74,6 +75,7 @@ class _DeckShowPageState extends State<DeckShowPage> {
                   }
 
                   if (val == '2') {
+                    // reset deck
                     // set up the buttons
                     Widget cancelButton = TextButton(
                       child: Text("Cancelar"),
@@ -83,7 +85,13 @@ class _DeckShowPageState extends State<DeckShowPage> {
                     );
                     Widget continueButton = TextButton(
                       child: Text("Continuar"),
-                      onPressed: () {},
+                      onPressed: () async {
+                        await API.deckReset(deck.id);
+                        final snackBar = SnackBar(content: Text('Revisões limpadas com sucesso.'));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                        Navigator.of(context).pop();
+                      },
                     );
 
                     // set up the AlertDialog
@@ -103,10 +111,12 @@ class _DeckShowPageState extends State<DeckShowPage> {
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                      const PopupMenuItem<String>(
-                        value: '1',
-                        child: Text('Remover deck'),
-                      ),
+                      deck.fromUser
+                          ? const PopupMenuItem<String>(
+                              value: '1',
+                              child: Text('Remover deck'),
+                            )
+                          : null,
                       const PopupMenuItem<String>(
                         value: '2',
                         child: Text('Limpar revisões dos flashcards'),

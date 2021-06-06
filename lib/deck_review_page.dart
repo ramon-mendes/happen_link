@@ -9,6 +9,7 @@ import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'dart:math';
+import 'consts.dart' as Consts;
 
 class DeckReviewPage extends StatefulWidget {
   static const routeName = '/deckreviewpage';
@@ -29,7 +30,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   void loadReviewList(BuildContext context) {
     API.fcGetReviewList(deck.id).then((review) {
       if (review.flashcards.length == 0) {
-        Navigator.of(context).pushNamedAndRemoveUntil(DeckReviewDone.routeName, (route) => false);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DeckShowPage.routeName));
+        return;
       }
 
       flashcards = review.flashcards;
@@ -38,7 +41,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
       for (var item in flashcards) {
         factors[item] = review.factors[i++];
 
-        for (var img in item.media.imagesBackURL) {
+        for (var img in item.media.imagesFrontURL) {
           precacheImage(NetworkImage(img), context);
         }
         for (var img in item.media.imagesBackURL) {
@@ -56,7 +59,8 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     if (currentFlashcard == null) {
       // go to ReviewDone page
       API.fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
-        Navigator.of(context).pushNamedAndRemoveUntil(DeckReviewDone.routeName, (route) => route is DeckShowPage);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DeckShowPage.routeName));
       });
     } else {
       // show next flashcard
@@ -86,6 +90,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   }
 
   void reviewFlashcard(int quality) {
+    assert(currentFlashcard != null);
     var review = factors[currentFlashcard];
     var result = SM.calc(quality, review.repetitions, review.interval, review.easeFactor);
     review.easeFactor = result.easeFactor;
@@ -104,6 +109,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
 
       return LoadingOverlay(
         isLoading: true,
+        progressIndicator: Consts.LOADING_INDICATOR,
         child: Container(),
       );
     }
@@ -120,7 +126,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(currentFlashcard.front),
+                    child: Text(currentFlashcard.front ?? ''),
                   ),
                   currentFlashcard.media.imagesFrontURL.length == 0
                       ? Container()
@@ -132,7 +138,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
               color: Color(0xff465a65),
               child: InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.all(17.0),
                   child: Center(
                       child: Text(
                     'Mostrar resposta',
@@ -164,7 +170,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(currentFlashcard.back),
+                    child: Text(currentFlashcard.back ?? '', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   currentFlashcard.media.imagesBackURL.length == 0
                       ? Container()
@@ -182,12 +188,17 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                   color: Color(0xffd92121),
                   child: InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(9.0),
                       child: Column(
-                        children: [Text('< 1 min'), Text('NOVAMENTE')],
+                        children: [
+                          Text('< 1 min', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          SizedBox(height: 2),
+                          Text('NOVAMENTE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        ],
                       ),
                     ),
                     onTap: () {
+                      if (currentFlashcard == null) return;
                       reviewFlashcard(0);
                       goToNextFlashcard(context);
                     },
@@ -199,12 +210,17 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                   color: Color(0xff35c672),
                   child: InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(9.0),
                       child: Column(
-                        children: [Text('< 10 min'), Text('BOM')],
+                        children: [
+                          Text('< 10 min', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          SizedBox(height: 2),
+                          Text('BOM', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        ],
                       ),
                     ),
                     onTap: () {
+                      if (currentFlashcard == null) return;
                       reviewFlashcard(3);
                       goToNextFlashcard(context);
                     },
@@ -216,12 +232,17 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                   color: Color(0xff9a88f3),
                   child: InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(9.0),
                       child: Column(
-                        children: [Text('4 d'), Text('FÁCIL')],
+                        children: [
+                          Text('4 d', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          SizedBox(height: 2),
+                          Text('FÁCIL', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        ],
                       ),
                     ),
                     onTap: () {
+                      if (currentFlashcard == null) return;
                       reviewFlashcard(5);
                       goToNextFlashcard(context);
                     },
@@ -238,7 +259,10 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   Widget _imagesCarousel(List<String> imgs) {
     return CarouselSlider(
       items: imgs.map((e) => Image.network(e)).toList(),
-      options: CarouselOptions(),
+      options: CarouselOptions(
+        aspectRatio: 1,
+        enableInfiniteScroll: false,
+      ),
     );
   }
 }
