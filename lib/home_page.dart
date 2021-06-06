@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/decks_page.dart';
+import 'package:happen_link/login_page.dart';
 import 'package:happen_link/procedure_page.dart';
+import 'package:happen_link/services/api.dart';
 import 'package:package_info/package_info.dart';
 
 import 'consts.dart' as Consts;
@@ -20,9 +22,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      String appName = packageInfo.appName;
-      String packageName = packageInfo.packageName;
-      String version = packageInfo.version;
       String buildNumber = packageInfo.buildNumber;
 
       setState(() {
@@ -132,7 +131,10 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(_versionCode, style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      await API.logout();
+                      Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+                    },
                     child: Text('Logout', style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
                   )
                 ],

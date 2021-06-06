@@ -19,11 +19,11 @@ class _DecksPageState extends State<DecksPage> {
   @override
   void initState() {
     super.initState();
-    reloadData();
+    _reloadData();
   }
 
-  void reloadData() {
-    API.deckList().then((value) => this.setState(() {
+  void _reloadData() {
+    API.of(context).deckList().then((value) => this.setState(() {
           _cache = value;
         }));
   }
@@ -39,7 +39,7 @@ class _DecksPageState extends State<DecksPage> {
             tooltip: 'Adicionar deck',
             onPressed: () async {
               await Navigator.of(context).pushNamed(DeckAddPage.routeName);
-              reloadData();
+              _reloadData();
             },
           ),
         ],
@@ -70,7 +70,7 @@ class _DecksPageState extends State<DecksPage> {
     return InkWell(
       onTap: () async {
         await Navigator.of(context).pushNamed(DeckShowPage.routeName, arguments: deck);
-        reloadData();
+        _reloadData();
       },
       child: Container(
         child: Padding(

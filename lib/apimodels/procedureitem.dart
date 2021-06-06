@@ -1,16 +1,14 @@
 import 'package:happen_link/apimodels/flashcard.dart';
 
 class ProcedureItem {
-  String id;
   int type;
   Step step;
   Flashcard flashcard;
   bool flashcardIsSaved;
 
-  ProcedureItem({this.id, this.type, this.step, this.flashcard, this.flashcardIsSaved});
+  ProcedureItem({this.type, this.step, this.flashcard, this.flashcardIsSaved});
 
   ProcedureItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
     type = json['type'];
     step = json['step'] != null ? new Step.fromJson(json['step']) : null;
     flashcard = json['flashcard'] != null ? new Flashcard.fromJson(json['flashcard']) : null;
@@ -19,7 +17,6 @@ class ProcedureItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
     data['type'] = this.type;
     if (this.step != null) {
       data['step'] = this.step.toJson();

@@ -46,7 +46,7 @@ class _DeckShowPageState extends State<DeckShowPage> {
                           this._saving = true;
                         });
 
-                        API.deckRemove(deck.id).then((value) {
+                        API.of(context).deckRemove(deck.id).then((value) {
                           final snackBar = SnackBar(content: Text('Deck removido com sucesso.'));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           Navigator.of(context).pop();
@@ -86,7 +86,7 @@ class _DeckShowPageState extends State<DeckShowPage> {
                     Widget continueButton = TextButton(
                       child: Text("Continuar"),
                       onPressed: () async {
-                        await API.deckReset(deck.id);
+                        await API.of(context).deckReset(deck.id);
                         final snackBar = SnackBar(content: Text('Revisões limpadas com sucesso.'));
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 

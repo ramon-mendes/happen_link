@@ -25,7 +25,7 @@ class _ProcedurePageState extends State<ProcedurePage> {
   void reloadData() {
     print('reloadData');
 
-    API.procedureList().then((value) => this.setState(() {
+    API.of(context).procedureList().then((value) => this.setState(() {
           _cache = value;
         }));
   }

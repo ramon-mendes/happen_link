@@ -28,7 +28,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   Random rng = new Random();
 
   void loadReviewList(BuildContext context) {
-    API.fcGetReviewList(deck.id).then((review) {
+    API.of(context).fcGetReviewList(deck.id).then((review) {
       if (review.flashcards.length == 0) {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DeckShowPage.routeName));
@@ -58,7 +58,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     currentFlashcard = getNextFlashcard();
     if (currentFlashcard == null) {
       // go to ReviewDone page
-      API.fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
+      API.of(context).fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DeckShowPage.routeName));
       });

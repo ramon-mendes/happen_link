@@ -49,7 +49,7 @@ class _DeckAddPageState extends State<DeckAddPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        API.deckCreate(_txtFieldCtrl.text).then((value) {
+                        API.of(context).deckCreate(_txtFieldCtrl.text).then((value) {
                           final snackBar = SnackBar(content: Text('Deck criado com sucesso.'));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           Navigator.of(context).pop();

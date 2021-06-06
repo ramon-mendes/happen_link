@@ -116,7 +116,7 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
       _saving = true;
     });
 
-    await API.fcCreate(_flashcard);
+    await API.of(context).fcCreate(_flashcard);
 
     final snackBar = SnackBar(content: Text('Flashcard criado com sucesso.'));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -152,11 +152,13 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
 
   Future<String> _imgFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera, imageQuality: 80);
+    if (pickedFile == null) return null;
     return _file2base64(File(pickedFile.path));
   }
 
   Future<String> _imgFromGallery() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery, imageQuality: 80);
+    if (pickedFile == null) return null;
     return _file2base64(File(pickedFile.path));
   }
 
@@ -178,6 +180,8 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
                     title: new Text('Galeria'),
                     onTap: () async {
                       var base64 = await _imgFromGallery();
+                      if (base64 == null) return;
+
                       setState(() {
                         if (front)
                           _flashcard.media.imagesFrontURL.add(base64);
@@ -192,6 +196,8 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
                     title: new Text('Câmera'),
                     onTap: () async {
                       var base64 = await _imgFromCamera();
+                      if (base64 == null) return;
+
                       setState(() {
                         if (front)
                           _flashcard.media.imagesFrontURL.add(base64);

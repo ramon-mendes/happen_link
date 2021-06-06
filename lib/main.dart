@@ -10,18 +10,31 @@ import 'package:happen_link/home_page.dart';
 import 'package:happen_link/login_page.dart';
 import 'package:happen_link/procedure_page.dart';
 import 'package:happen_link/procedure_show_page.dart';
+import 'package:happen_link/services/api.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  var isLogged = await API.isLogged();
+
+  runApp(MyApp(
+    initialRoute: isLogged ? HomePage.routeName : LoginPage.routeName,
+  ));
+}
 
 class MyApp extends StatelessWidget {
+  final String initialRoute;
+
+  MyApp({this.initialRoute});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Happen Link',
       theme: ThemeData(primarySwatch: Colors.teal, accentColor: Colors.black),
+      initialRoute: initialRoute,
       routes: {
-        '/': (BuildContext context) => LoginPage(),
-        //'/': (BuildContext context) => HomePage(),
+        LoginPage.routeName: (BuildContext context) => LoginPage(),
         HomePage.routeName: (BuildContext context) => HomePage(),
         DecksPage.routeName: (BuildContext context) => DecksPage(),
         ProcedurePage.routeName: (BuildContext context) => ProcedurePage(),

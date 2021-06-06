@@ -6,7 +6,7 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'consts.dart' as Consts;
 
 class LoginPage extends StatefulWidget {
-  static const routeName = '/login-list';
+  static const routeName = '/loginpage';
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -22,12 +22,20 @@ class _LoginPageState extends State<LoginPage> {
       this._saving = true;
     });
 
-    try {
-      await API.login(ctrlEmail.text, ctrlPwd.text);
+    var res = await API.of(context).login(ctrlEmail.text, ctrlPwd.text);
+    if (res == ELoginResult.OK) {
       Navigator.of(context).pushReplacementNamed(HomePage.routeName);
-    } catch (e) {
+    } else if (res == ELoginResult.LOGIN_INVALID) {
       final snackBar = SnackBar(
-        content: Text('Falha no login'),
+        content: Text('Usuário ou senha inválidos.'),
+        duration: Duration(milliseconds: 2000),
+      );
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    } else if (res == ELoginResult.ERROR) {
+      final snackBar = SnackBar(
+        content: Text('Não foi possível completar esta ação.'),
         duration: Duration(milliseconds: 2000),
       );
       ScaffoldMessenger.of(context)
@@ -77,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     height: 43,
                     child: TextField(
-                      autofocus: true,
                       controller: ctrlEmail,
                       decoration: InputDecoration(
                         hintText: 'E-mail',

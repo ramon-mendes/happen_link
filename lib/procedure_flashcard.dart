@@ -18,8 +18,8 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
   bool addedView = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     for (var img in widget.fc.media.imagesFrontURL) {
       precacheImage(NetworkImage(img), context);
@@ -126,7 +126,7 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
               )),
             ),
             onTap: () async {
-              var res = await API.procedureImportFlashcard(widget.fc.id);
+              var res = await API.of(context).procedureImportFlashcard(widget.fc.id);
               if (!res) {
                 final snackBar = SnackBar(
                     content: Text('Este flashcard já está no seu deck de Procedimentos.'), backgroundColor: Colors.red);
@@ -145,7 +145,12 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
 
   Widget _imagesCarousel(List<String> imgs) {
     return CarouselSlider(
-      items: imgs.map((e) => Image.network(e)).toList(),
+      items: imgs
+          .map((e) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.network(e),
+              ))
+          .toList(),
       options: CarouselOptions(
         enableInfiniteScroll: false,
       ),

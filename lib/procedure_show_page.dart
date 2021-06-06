@@ -33,7 +33,7 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
     _procedure = ModalRoute.of(context).settings.arguments as Procedure;
 
     if (_data == null) {
-      API.procedureListItens(_procedure.id).then((value) {
+      API.of(context).procedureListItens(_procedure.id).then((value) {
         setState(() {
           _data = value;
         });
@@ -107,7 +107,7 @@ img {
 	font-weight: bold;
 	margin-bottom: 20px;
 }
-ul {
+ol, ul {
   padding-left: 24px;
 }</style>
 <div id="title">${item.step.title}</div>
