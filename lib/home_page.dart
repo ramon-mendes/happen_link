@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Deck',
+                            'Decks',
                             style: TextStyle(fontSize: 20, color: Consts.LOGIN_TXT_COLOR),
                           ),
                           SizedBox(

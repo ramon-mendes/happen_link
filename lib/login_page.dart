@@ -13,8 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController ctrlEmail = TextEditingController(text: 'ramon@misoftware.com.br');
-  final TextEditingController ctrlPwd = TextEditingController(text: 'SEnha123');
+  final TextEditingController ctrlEmail = TextEditingController();
+  final TextEditingController ctrlPwd = TextEditingController();
   bool _saving = false;
 
   void loginClicked() async {

@@ -59,7 +59,6 @@ class _ProcedurePageState extends State<ProcedurePage> {
           ),
           Expanded(
             child: Container(
-              color: Colors.white,
               child: ListView.separated(
                 separatorBuilder: (BuildContext context, int index) => Divider(
                   height: 1,

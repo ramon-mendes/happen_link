@@ -72,10 +72,12 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Center(
-                    child: Text(
-                  'Mostrar resposta',
-                  style: TextStyle(color: Colors.white),
-                )),
+                  child: Text(
+                    'Mostrar resposta',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
               onTap: () {
                 setState(() {
@@ -102,6 +104,7 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.fc.back,
+                    textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

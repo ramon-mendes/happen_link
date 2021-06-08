@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/procedure.dart';
 import 'package:happen_link/apimodels/procedureitem.dart';
@@ -18,15 +17,14 @@ class ProcedureShowPage extends StatefulWidget {
 
 class _ProcedureShowPageState extends State<ProcedureShowPage> {
   WebViewController _wvcontroller;
-  CarouselController _crcontroller = CarouselController();
   Procedure _procedure;
   List<ProcedureItem> _data;
+  List<Widget> _views = <Widget>[];
   int _idx = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  PageController _ctrl = PageController(
+    initialPage: 0,
+    viewportFraction: 0.9999,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +34,9 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
       API.of(context).procedureListItens(_procedure.id).then((value) {
         setState(() {
           _data = value;
+          for (var item in _data) {
+            _views.add(_getItemView(item));
+          }
         });
       });
 
@@ -45,18 +46,6 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
         ),
       );
     }
-
-    var carousel = CarouselSlider(
-      items: _data.map((item) => _getItemView(item)).toList(),
-      options: CarouselOptions(
-        autoPlay: false,
-        enableInfiniteScroll: false,
-        viewportFraction: 1,
-        height: double.infinity,
-        onPageChanged: (idx, c) => _updateButtons(idx),
-      ),
-      carouselController: _crcontroller,
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +70,15 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
       ),
       body: Container(
         color: Colors.white,
-        child: carousel,
+        child: PageView(
+          controller: _ctrl,
+          children: _views,
+          //physics: AlwaysScrollableScrollPhysics(),
+          onPageChanged: (value) {
+            _idx = value;
+            setState(() {});
+          },
+        ),
       ),
     );
   }
@@ -116,16 +113,17 @@ ${item.step.html}
 </html>''';
 
       return WebView(
-          initialUrl: '',
-          //javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
-            _wvcontroller = webViewController;
-            _wvcontroller.loadUrl(Uri.dataFromString(
-              html,
-              mimeType: 'text/html',
-              encoding: Encoding.getByName('utf-8'),
-            ).toString());
-          });
+        //javascriptMode: JavascriptMode.unrestricted,
+        initialUrl: "about:blank",
+        onWebViewCreated: (WebViewController webViewController) {
+          _wvcontroller = webViewController;
+          _wvcontroller.loadUrl(Uri.dataFromString(
+            html,
+            mimeType: 'text/html',
+            encoding: Encoding.getByName('utf-8'),
+          ).toString());
+        },
+      );
     }
 
     // Flashcard
@@ -135,16 +133,14 @@ ${item.step.html}
   }
 
   void _goNextSlide() {
-    _crcontroller.nextPage();
+    _idx++;
+    _ctrl.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+    setState(() {});
   }
 
   void _goPrevSlide() {
-    _crcontroller.previousPage();
-  }
-
-  void _updateButtons(int idx) {
-    setState(() {
-      _idx = idx;
-    });
+    _idx--;
+    _ctrl.previousPage(duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+    setState(() {});
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/deck.dart';
@@ -7,7 +10,9 @@ import 'package:happen_link/classes/sm.dart';
 import 'package:happen_link/deck_review_done.dart';
 import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/services/api.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 import 'consts.dart' as Consts;
 
@@ -126,7 +131,10 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(currentFlashcard.front ?? ''),
+                    child: Text(
+                      currentFlashcard.front ?? '',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   currentFlashcard.media.imagesFrontURL.length == 0
                       ? Container()
@@ -170,11 +178,23 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(currentFlashcard.back ?? '', style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text(
+                      currentFlashcard.back ?? '',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   currentFlashcard.media.imagesBackURL.length == 0
                       ? Container()
                       : _imagesCarousel(currentFlashcard.media.imagesBackURL),
+                  FutureBuilder(
+                      future: _audioPlayer(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return snapshot.data;
+                        }
+                        return Container();
+                      }),
                 ],
               ),
             ),
@@ -264,5 +284,48 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
         enableInfiniteScroll: false,
       ),
     );
+  }
+
+  AudioPlayer _player;
+
+  Future<Widget> _audioPlayer() async {
+    if (currentFlashcard.media.audioBase64 != null) {
+      _player = AudioPlayer();
+      final dir = await getApplicationDocumentsDirectory();
+      final path = dir.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.m4a';
+      File(path).writeAsBytes(base64.decode(currentFlashcard.media.audioBase64));
+      await _player.setFilePath(path);
+
+      // play control logic
+      const double _controlSize = 56;
+      Icon icon;
+      Color color;
+
+      if (_player.playerState.playing) {
+        icon = Icon(Icons.pause, color: Colors.red, size: 30);
+        color = Colors.red.withOpacity(0.1);
+      } else {
+        final theme = Theme.of(context);
+        icon = Icon(Icons.play_arrow, color: theme.primaryColor, size: 30);
+        color = theme.primaryColor.withOpacity(0.1);
+      }
+
+      return ClipOval(
+        child: Material(
+          color: color,
+          child: InkWell(
+            child: SizedBox(width: _controlSize, height: _controlSize, child: icon),
+            onTap: () {
+              if (_player.playerState.playing) {
+                _player.pause();
+              } else {
+                _player.play();
+              }
+            },
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 }

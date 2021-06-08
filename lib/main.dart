@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'Happen Link',
       theme: ThemeData(primarySwatch: Colors.teal, accentColor: Colors.black),
       initialRoute: initialRoute,
+      debugShowCheckedModeBanner: false,
       routes: {
         LoginPage.routeName: (BuildContext context) => LoginPage(),
         HomePage.routeName: (BuildContext context) => HomePage(),

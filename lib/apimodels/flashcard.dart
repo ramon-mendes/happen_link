@@ -1,7 +1,7 @@
 class FlashcardMedia {
   List<String> imagesFrontURL;
   List<String> imagesBackURL;
-  List<String> audioBase64;
+  String audioBase64;
 
   FlashcardMedia();
 
