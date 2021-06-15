@@ -20,6 +20,16 @@ class DeckEditFlashcardPage extends StatefulWidget {
 class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
   bool _saving = false;
   Flashcard _flashcard;
+  final TextEditingController _txtFront = TextEditingController();
+  final TextEditingController _txtBack = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _txtFront.dispose();
+    _txtBack.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +59,7 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
                 Text('Texto frente:'),
                 SizedBox(height: 5),
                 TextFormField(
+                  controller: _txtFront,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                   ),
@@ -59,9 +70,9 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
                 Text('Texto trás:'),
                 SizedBox(height: 5),
                 TextFormField(
+                  controller: _txtBack,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    //labelText: 'Texto frente',
                   ),
                 ),
                 //
@@ -116,6 +127,8 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
       _saving = true;
     });
 
+    _flashcard.front = _txtFront.text;
+    _flashcard.back = _txtBack.text;
     await API.of(context).fcCreate(_flashcard);
 
     final snackBar = SnackBar(content: Text('Flashcard criado com sucesso.'));

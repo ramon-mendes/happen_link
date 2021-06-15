@@ -146,7 +146,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
               color: Color(0xff465a65),
               child: InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.all(17.0),
+                  padding: const EdgeInsets.all(18.0),
                   child: Center(
                       child: Text(
                     'Mostrar resposta',
@@ -181,7 +181,6 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                     child: Text(
                       currentFlashcard.back ?? '',
                       style: TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                   currentFlashcard.media.imagesBackURL.length == 0
@@ -277,11 +276,19 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   }
 
   Widget _imagesCarousel(List<String> imgs) {
-    return CarouselSlider(
-      items: imgs.map((e) => Image.network(e)).toList(),
-      options: CarouselOptions(
-        aspectRatio: 1,
-        enableInfiniteScroll: false,
+    return SizedBox(
+      child: CarouselSlider(
+        items: imgs
+            .map((e) => FadeInImage.assetNetwork(
+                  placeholder: 'assets/busy.gif',
+                  image: e,
+                ))
+            .toList(),
+        options: CarouselOptions(
+          height: 200,
+          aspectRatio: 1,
+          enableInfiniteScroll: false,
+        ),
       ),
     );
   }

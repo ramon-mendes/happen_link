@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:happen_link/apimodels/procedure.dart';
 import 'package:happen_link/apimodels/procedureitem.dart';
 import 'package:happen_link/color_loader_4.dart';
 import 'package:happen_link/procedure_flashcard.dart';
 import 'package:happen_link/services/api.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class ProcedureShowPage extends StatefulWidget {
   static const routeName = '/procedureshowpage';
@@ -16,14 +14,12 @@ class ProcedureShowPage extends StatefulWidget {
 }
 
 class _ProcedureShowPageState extends State<ProcedureShowPage> {
-  WebViewController _wvcontroller;
   Procedure _procedure;
   List<ProcedureItem> _data;
   List<Widget> _views = <Widget>[];
   int _idx = 0;
   PageController _ctrl = PageController(
     initialPage: 0,
-    viewportFraction: 0.9999,
   );
 
   @override
@@ -86,11 +82,12 @@ class _ProcedureShowPageState extends State<ProcedureShowPage> {
   Widget _getItemView(ProcedureItem item) {
     // Step
     if (item.type == 0) {
-      var html = '''<html><body>
+      var html = '''
 <style>
 body {
 	margin: 20px 10px;
 	font-family: sans-serif;
+  font-size: 16px;
 }
 
 img {
@@ -105,25 +102,13 @@ img {
 	margin-bottom: 20px;
 }
 ol, ul {
-  padding-left: 24px;
+  padding-left: 0;
 }</style>
 <div id="title">${item.step.title}</div>
 ${item.step.html}
-      </body>
-</html>''';
+''';
 
-      return WebView(
-        //javascriptMode: JavascriptMode.unrestricted,
-        initialUrl: "about:blank",
-        onWebViewCreated: (WebViewController webViewController) {
-          _wvcontroller = webViewController;
-          _wvcontroller.loadUrl(Uri.dataFromString(
-            html,
-            mimeType: 'text/html',
-            encoding: Encoding.getByName('utf-8'),
-          ).toString());
-        },
-      );
+      return Html(data: html);
     }
 
     // Flashcard
