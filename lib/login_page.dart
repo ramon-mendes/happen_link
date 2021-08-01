@@ -89,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         hintText: 'E-mail',
                       ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                   Container(

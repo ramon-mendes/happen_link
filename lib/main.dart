@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/geofencing.dart';
 import 'package:happen_link/deck_add_page.dart';
 import 'package:happen_link/deck_audio_edit_page.dart';
 import 'package:happen_link/deck_edit_flashcard_page.dart';
@@ -6,14 +7,44 @@ import 'package:happen_link/deck_review_done.dart';
 import 'package:happen_link/deck_review_page.dart';
 import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/decks_page.dart';
+import 'package:happen_link/gpslink_page.dart';
+import 'package:happen_link/gpslink_show_page.dart';
 import 'package:happen_link/home_page.dart';
 import 'package:happen_link/login_page.dart';
 import 'package:happen_link/procedure_page.dart';
 import 'package:happen_link/procedure_show_page.dart';
 import 'package:happen_link/services/api.dart';
+import 'package:location/location.dart' as loc;
+
+import 'gpslink_edit_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  loc.Location location = new loc.Location();
+
+  bool _serviceEnabled;
+  loc.PermissionStatus _permissionGranted;
+
+  _serviceEnabled = await location.serviceEnabled();
+  if (!_serviceEnabled) {
+    _serviceEnabled = await location.requestService();
+    if (!_serviceEnabled) {
+      return;
+    }
+  }
+
+  _permissionGranted = await location.hasPermission();
+  if (_permissionGranted == loc.PermissionStatus.denied) {
+    _permissionGranted = await location.requestPermission();
+    if (_permissionGranted != loc.PermissionStatus.granted) {
+      return;
+    }
+  }
+
+  location.enableBackgroundMode(enable: true);
+
+  location.onLocationChanged.listen((loc.LocationData currentLocation) async {});
 
   var isLogged = await API.isLogged();
 
@@ -46,6 +77,9 @@ class MyApp extends StatelessWidget {
         DeckReviewDone.routeName: (BuildContext context) => DeckReviewDone(),
         DeckEditFlashcardPage.routeName: (BuildContext context) => DeckEditFlashcardPage(),
         DeckAudioEditPage.routeName: (BuildContext context) => DeckAudioEditPage(),
+        GPSLinkPage.routeName: (BuildContext context) => GPSLinkPage(),
+        GPSLinkEditPage.routeName: (BuildContext context) => GPSLinkEditPage(),
+        GPSLinkShowPage.routeName: (BuildContext context) => GPSLinkShowPage(),
       },
     );
   }

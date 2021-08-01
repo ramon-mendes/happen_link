@@ -78,7 +78,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   Flashcard getNextFlashcard() {
     if (factors.length == 0) return null;
 
-    var filtered = factors.entries.where((element) {
+    var filtered = factors.entries.toList();
+
+    filtered = factors.entries.where((element) {
       var date =
           DateTime(element.value.dtLastReview.year, element.value.dtLastReview.month, element.value.dtLastReview.day);
       date = date.add(Duration(days: element.value.interval));
@@ -119,6 +121,48 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
       );
     }
 
+    return Material(
+      child: Stack(
+        children: [
+          _getMainView(),
+          Positioned(
+            top: 28,
+            right: 4,
+            child: ClipOval(
+              child: Material(
+                child: InkWell(
+                  child: SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: PopupMenuButton(
+                      child: new Icon(Icons.arrow_drop_down),
+                      onSelected: (choice) {
+                        API.of(context).fcDelete(currentFlashcard).then((value) {
+                          flashcards.remove(currentFlashcard);
+                          factors.remove(currentFlashcard);
+                          goToNextFlashcard(context);
+                        });
+                      },
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            value: 'rmv',
+                            child: Text('Remover flashcard'),
+                          ),
+                        ];
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getMainView() {
     // Frontview
     if (frontView) {
       return Scaffold(
@@ -181,6 +225,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                     child: Text(
                       currentFlashcard.back ?? '',
                       style: TextStyle(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   currentFlashcard.media.imagesBackURL.length == 0
@@ -285,7 +330,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 ))
             .toList(),
         options: CarouselOptions(
-          height: 200,
+          height: 230,
           aspectRatio: 1,
           enableInfiniteScroll: false,
         ),

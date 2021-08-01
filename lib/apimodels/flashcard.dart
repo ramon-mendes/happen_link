@@ -28,6 +28,7 @@ class Flashcard {
   FlashcardMedia media;
 
   Flashcard(this.id, this.deckId, this.front, this.back, this.media);
+
   Flashcard.fromDeckId(this.deckId) {
     this.media = FlashcardMedia();
     this.media.imagesFrontURL = <String>[];

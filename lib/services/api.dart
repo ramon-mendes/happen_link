@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/deck.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
+import 'package:happen_link/apimodels/gpslink.dart';
 import 'package:happen_link/apimodels/procedure.dart';
 import 'package:happen_link/apimodels/procedureitem.dart';
 import 'package:happen_link/apimodels/review.dart';
@@ -12,7 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 const API_URL = 'happenlinkbackend.azurewebsites.net';
-//const API_URL = '10.0.2.2:51387';
+//const API_URL = '10.0.2.2:51388';
 const PREFERENCES_KEY = 'logged_user';
 
 enum ELoginResult {
@@ -238,6 +239,21 @@ class API {
     return null;
   }
 
+  Future<void> fcDelete(Flashcard model) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final response = await http.get(Uri.https(API_URL, "api/flashcard/delete", {'id': model.id}), headers: _headers);
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
+  }
+
   Future<List<Procedure>> procedureList() async {
     if (!await _checkInternet()) throw Exception();
 
@@ -297,5 +313,84 @@ class API {
       _catchException();
     }
     return null;
+  }
+
+  Future<List<GPSLink>> gpslinkList() async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final response = await http.get(Uri.https(API_URL, "api/gpslink/list"), headers: _headers);
+      if (response.statusCode == 200) {
+        var all = jsonDecode(response.body);
+        var list = <GPSLink>[];
+        for (var item in all) {
+          list.add(GPSLink.fromJson(item));
+        }
+        return list;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
+    return null;
+  }
+
+  Future<void> gpslinkRemove(String id) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final response = await http.get(Uri.https(API_URL, "api/gpslink/remove", {'id': id}), headers: _headers);
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
+  }
+
+  Future<void> gpslinkCreate(GPSLink gpslink) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final body = gpslink.toJson();
+      body.remove('id'); // fuck
+
+      final response = await http.post(
+        Uri.https(API_URL, "api/gpslink/create"),
+        headers: _jsonHeader(),
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
+  }
+
+  Future<void> gpslinkEdit(GPSLink gpslink) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final response = await http.post(
+        Uri.https(API_URL, "api/gpslink/edit"),
+        headers: _jsonHeader(),
+        body: jsonEncode(gpslink.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
   }
 }

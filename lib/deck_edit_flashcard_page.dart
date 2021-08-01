@@ -60,6 +60,9 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _txtFront,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1, //Normal textInputField will be displayed
+                  maxLines: 5, // when user presses enter it will adapt to it
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                   ),
@@ -71,6 +74,9 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _txtBack,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1, //Normal textInputField will be displayed
+                  maxLines: 5, // when user presses enter it will adapt to it
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                   ),
@@ -149,7 +155,7 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
       color: Color(0xff6fb6f8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
       child: InkWell(
-        onTap: () => _showPicker(context, true),
+        onTap: () => _showPicker(context, front),
         child: Icon(
           Icons.add,
           size: 40,

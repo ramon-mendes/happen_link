@@ -41,7 +41,11 @@ class _ProcedureFlashcardState extends State<ProcedureFlashcard> {
               padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 30),
               child: Lottie.asset('assets/success_confetti_lottie.json'),
             ),
-            Text('Flashcard adicionado ao deck Procedimentos!', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              'Flashcard adicionado ao deck Procedimentos!',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       );

@@ -16,8 +16,6 @@ class _ProcedurePageState extends State<ProcedurePage> {
 
   @override
   void initState() {
-    print('initState');
-
     super.initState();
     reloadData();
   }
