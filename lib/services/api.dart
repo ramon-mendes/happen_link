@@ -29,6 +29,7 @@ class API {
   BuildContext _context;
   static User loggedUser;
 
+  API();
   API.of(this._context);
 
   static void _loadConfigs() {
@@ -333,6 +334,23 @@ class API {
     } catch (e) {
       _catchException();
     }
+    return null;
+  }
+
+  Future<List<GPSLink>> gpslinkListNoError() async {
+    try {
+      final response = await http.get(Uri.https(API_URL, "api/gpslink/list"), headers: _headers);
+      if (response.statusCode == 200) {
+        var all = jsonDecode(response.body);
+        var list = <GPSLink>[];
+        for (var item in all) {
+          list.add(GPSLink.fromJson(item));
+        }
+        return list;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {}
     return null;
   }
 

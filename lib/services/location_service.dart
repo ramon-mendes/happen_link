@@ -1,47 +1,88 @@
 import 'dart:async';
 
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:happen_link/apimodels/gpslink.dart';
+import 'package:happen_link/services/api.dart';
 import 'package:location/location.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as mp;
 
 class LocationService {
-  UserLocation _currentLocation;
-  var location = Location();
+  static List<GPSLink> _gpslinklist;
 
-  StreamController<UserLocation> _locationController = StreamController<UserLocation>();
-  Stream<UserLocation> get locationStream => _locationController.stream;
+  static Future<void> start() async {
+    await AndroidAlarmManager.initialize();
 
-  LocationService() {
-    // Request permission to use location
-    location.requestPermission().then((granted) {
-      if (granted == PermissionStatus.granted) {
-        // If granted listen to the onLocationChanged stream and emit over our controller
-        location.onLocationChanged.listen((locationData) {
-          if (locationData != null) {
-            _locationController.add(UserLocation(
-              latitude: locationData.latitude,
-              longitude: locationData.longitude,
-            ));
-          }
-        });
+    _loadGPSLinkLoop();
+
+    Location location = new Location();
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
       }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    location.enableBackgroundMode(enable: true);
+
+    location.onLocationChanged.listen((LocationData currentLocation) async {
+      if (_gpslinklist != null) {
+        _checkEnterArea(currentLocation.latitude, currentLocation.longitude);
+      }
+      _checkLeftArea(currentLocation.latitude, currentLocation.longitude);
     });
   }
 
-  Future<UserLocation> getLocation() async {
-    try {
-      var userLocation = await location.getLocation();
-      _currentLocation = UserLocation(
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude,
-      );
-    } on Exception catch (e) {
-      print('Could not get location: ${e.toString()}');
-    }
-    return _currentLocation;
-  }
-}
+  static List<String> _enteredGPSLinkIds = [];
+  static List<GPSLink> _enteredGPSLink = [];
 
-class UserLocation {
-  final double latitude;
-  final double longitude;
-  UserLocation({this.latitude, this.longitude});
+  static void _checkEnterArea(double curLat, double curLng) {
+    for (var gpsLink in _gpslinklist) {
+      double distMeters =
+          mp.SphericalUtil.computeDistanceBetween(mp.LatLng(gpsLink.lat, gpsLink.lng), mp.LatLng(curLat, curLng));
+      if (distMeters < gpsLink.radius && !_enteredGPSLinkIds.contains(gpsLink.id)) {
+        _enterArea(gpsLink);
+      }
+    }
+  }
+
+  static void _checkLeftArea(double curLat, double curLng) {
+    for (var gpsLink in _enteredGPSLink) {
+      double distMeters =
+          mp.SphericalUtil.computeDistanceBetween(mp.LatLng(gpsLink.lat, gpsLink.lng), mp.LatLng(curLat, curLng));
+      if (distMeters > gpsLink.radius) {
+        _enteredGPSLink.remove(gpsLink);
+        _enteredGPSLinkIds.remove(gpsLink.id);
+      }
+    }
+  }
+
+  static void _enterArea(GPSLink gpsLink) {
+    _enteredGPSLink.add(gpsLink);
+    _enteredGPSLinkIds.add(gpsLink.id);
+  }
+
+  static Future<void> _loadGPSLinkLoop() async {
+    await Future.delayed(Duration(seconds: 3));
+
+    API api = API();
+    while (true) {
+      var list = await api.gpslinkListNoError();
+      if (list != null) {
+        _gpslinklist = list;
+      }
+      await Future.delayed(Duration(seconds: 30));
+    }
+  }
 }

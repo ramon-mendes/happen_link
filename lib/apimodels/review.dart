@@ -51,28 +51,6 @@ class ReviewList {
   }
 }
 
-class Media {
-  Null audioBase64;
-  Null imageFrontURL;
-  Null imageBackURL;
-
-  Media({this.audioBase64, this.imageFrontURL, this.imageBackURL});
-
-  Media.fromJson(Map<String, dynamic> json) {
-    audioBase64 = json['audioBase64'];
-    imageFrontURL = json['imageFrontURL'];
-    imageBackURL = json['imageBackURL'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['audioBase64'] = this.audioBase64;
-    data['imageFrontURL'] = this.imageFrontURL;
-    data['imageBackURL'] = this.imageBackURL;
-    return data;
-  }
-}
-
 class FlahscardReviewFactor {
   DateTime dtLastReview;
   int interval;
