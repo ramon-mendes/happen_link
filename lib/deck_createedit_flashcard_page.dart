@@ -10,18 +10,31 @@ import 'package:loading_overlay/loading_overlay.dart';
 
 import 'apimodels/flashcard.dart';
 
-class DeckEditFlashcardPage extends StatefulWidget {
-  static const routeName = '/deckeditflashcard';
+class DeckCreateEditFlashcardPage extends StatefulWidget {
+  static const routeName = '/deckcreateeditflashcard';
 
   @override
-  _DeckEditFlashcardPageState createState() => _DeckEditFlashcardPageState();
+  _DeckCreateEditFlashcardPageState createState() => _DeckCreateEditFlashcardPageState();
 }
 
-class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
+class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPage> {
   bool _saving = false;
+  bool _isedit = false;
   Flashcard _flashcard;
   final TextEditingController _txtFront = TextEditingController();
   final TextEditingController _txtBack = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _flashcard = ModalRoute.of(context).settings.arguments as Flashcard;
+    if (_flashcard != null) {
+      _isedit = true;
+      _txtFront.text = _flashcard.front;
+      _txtBack.text = _flashcard.back;
+    }
+  }
 
   @override
   void dispose() {
@@ -33,8 +46,6 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
 
   @override
   Widget build(BuildContext context) {
-    _flashcard = ModalRoute.of(context).settings.arguments as Flashcard;
-
     return LoadingOverlay(
       isLoading: _saving,
       child: Scaffold(
@@ -137,10 +148,11 @@ class _DeckEditFlashcardPageState extends State<DeckEditFlashcardPage> {
     _flashcard.back = _txtBack.text;
     await API.of(context).fcCreate(_flashcard);
 
-    final snackBar = SnackBar(content: Text('Flashcard criado com sucesso.'));
+    final snackBar =
+        SnackBar(content: Text(_isedit ? 'Flashcard salvo com sucesso.' : 'Flashcard criado com sucesso.'));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(_flashcard);
   }
 
   List<Widget> _getGridImages(bool front) {

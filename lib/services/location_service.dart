@@ -37,10 +37,12 @@ class LocationService {
     location.enableBackgroundMode(enable: true);
 
     location.onLocationChanged.listen((LocationData currentLocation) async {
-      if (_gpslinklist != null) {
-        _checkEnterArea(currentLocation.latitude, currentLocation.longitude);
+      if (await API.isLogged()) {
+        if (_gpslinklist != null) {
+          _checkEnterArea(currentLocation.latitude, currentLocation.longitude);
+        }
+        _checkLeftArea(currentLocation.latitude, currentLocation.longitude);
       }
-      _checkLeftArea(currentLocation.latitude, currentLocation.longitude);
     });
   }
 

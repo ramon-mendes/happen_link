@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/deck_add_page.dart';
 import 'package:happen_link/deck_audio_edit_page.dart';
-import 'package:happen_link/deck_edit_flashcard_page.dart';
+import 'package:happen_link/deck_createedit_flashcard_page.dart';
 import 'package:happen_link/deck_review_done.dart';
 import 'package:happen_link/deck_review_page.dart';
 import 'package:happen_link/deck_show_page.dart';
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         DeckShowPage.routeName: (BuildContext context) => DeckShowPage(),
         DeckReviewPage.routeName: (BuildContext context) => DeckReviewPage(),
         DeckReviewDone.routeName: (BuildContext context) => DeckReviewDone(),
-        DeckEditFlashcardPage.routeName: (BuildContext context) => DeckEditFlashcardPage(),
+        DeckCreateEditFlashcardPage.routeName: (BuildContext context) => DeckCreateEditFlashcardPage(),
         DeckAudioEditPage.routeName: (BuildContext context) => DeckAudioEditPage(),
         GPSLinkPage.routeName: (BuildContext context) => GPSLinkPage(),
         GPSLinkEditPage.routeName: (BuildContext context) => GPSLinkEditPage(),

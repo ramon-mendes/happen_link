@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
-import 'package:happen_link/deck_edit_flashcard_page.dart';
+import 'package:happen_link/deck_createedit_flashcard_page.dart';
 import 'package:happen_link/deck_review_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -138,7 +138,7 @@ class _DeckShowPageState extends State<DeckShowPage> {
           onPressed: () {
             if (deck.fromUser) {
               Navigator.of(context)
-                  .pushNamed(DeckEditFlashcardPage.routeName, arguments: Flashcard.fromDeckId(deck.id));
+                  .pushNamed(DeckCreateEditFlashcardPage.routeName, arguments: Flashcard.fromDeckId(deck.id));
             } else {
               // Create button
               Widget okButton = TextButton(

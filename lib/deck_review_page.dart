@@ -15,6 +15,7 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 import 'consts.dart' as Consts;
+import 'deck_createedit_flashcard_page.dart';
 
 class DeckReviewPage extends StatefulWidget {
   static const routeName = '/deckreviewpage';
@@ -136,18 +137,32 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                     width: 40,
                     child: PopupMenuButton(
                       child: new Icon(Icons.arrow_drop_down),
-                      onSelected: (choice) {
-                        API.of(context).fcDelete(currentFlashcard).then((value) {
-                          flashcards.remove(currentFlashcard);
-                          factors.remove(currentFlashcard);
-                          goToNextFlashcard(context);
-                        });
+                      onSelected: (choice) async {
+                        if (choice == 'rmv') {
+                          API.of(context).fcDelete(currentFlashcard).then((value) {
+                            flashcards.remove(currentFlashcard);
+                            factors.remove(currentFlashcard);
+                            goToNextFlashcard(context);
+                          });
+                        } else {
+                          var res = await Navigator.of(context)
+                              .pushNamed(DeckCreateEditFlashcardPage.routeName, arguments: currentFlashcard);
+                          if (res != null) {
+                            setState(() {
+                              currentFlashcard = res;
+                            });
+                          }
+                        }
                       },
                       itemBuilder: (context) {
                         return [
                           PopupMenuItem(
                             value: 'rmv',
                             child: Text('Remover flashcard'),
+                          ),
+                          PopupMenuItem(
+                            value: 'edit',
+                            child: Text('Editar flashcard'),
                           ),
                         ];
                       },
