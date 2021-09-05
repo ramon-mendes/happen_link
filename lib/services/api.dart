@@ -97,6 +97,8 @@ class API {
         prefs.setString(PREFERENCES_KEY, response.body);
 
         loggedUser = User.fromJson(jsonDecode(response.body));
+        assert(loggedUser.token != null);
+
         _loadConfigs();
         return ELoginResult.OK;
       } else {

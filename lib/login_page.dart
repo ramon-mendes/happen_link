@@ -63,51 +63,49 @@ class _LoginPageState extends State<LoginPage> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Image(
-                        image: AssetImage('assets/logo.png'),
-                        width: 300,
-                        height: 120,
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Image(
+                      image: AssetImage('assets/logo.png'),
+                      width: 300,
+                      height: 120,
+                    ),
+                  ),
+                  Container(
+                    height: 43,
+                    child: TextField(
+                      controller: ctrlEmail,
+                      decoration: InputDecoration(
+                        hintText: 'E-mail',
                       ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
-                    Container(
-                      height: 43,
-                      child: TextField(
-                        controller: ctrlEmail,
-                        decoration: InputDecoration(
-                          hintText: 'E-mail',
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ),
-                    Container(
-                      height: 43,
-                      child: PasswordField(ctrlPwd),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: ButtonTheme(
-                        child: SizedBox(
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: loginClicked,
-                            child: Text(
-                              "LOGIN",
-                            ),
+                  ),
+                  Container(
+                    height: 43,
+                    child: PasswordField(ctrlPwd),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ButtonTheme(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: loginClicked,
+                          child: Text(
+                            "LOGIN",
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

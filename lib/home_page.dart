@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/decks_page.dart';
 import 'package:happen_link/gpslink_page.dart';
@@ -7,6 +8,7 @@ import 'package:happen_link/services/api.dart';
 import 'package:package_info/package_info.dart';
 
 import 'consts.dart' as Consts;
+import 'gpslink_show_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/homepage';
@@ -28,6 +30,10 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _versionCode = 'v$buildNumber';
       });
+    });
+
+    AwesomeNotifications().actionStream.listen((receivedNotification) {
+      Navigator.of(context).pushNamed(GPSLinkShowPage.routeName, arguments: {id: receivedNotification.id});
     });
   }
 

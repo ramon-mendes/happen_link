@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:happen_link/apimodels/gpslink.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:location/location.dart';
@@ -43,6 +44,21 @@ class LocationService {
     });
   }
 
+  static Future<void> _loadGPSLinkLoop() async {
+    await Future.delayed(Duration(seconds: 3));
+
+    API api = API();
+    while (true) {
+      if (await API.isLogged()) {
+        var list = await api.gpslinkListNoError();
+        if (list != null) {
+          _gpslinklist = list;
+        }
+      }
+      await Future.delayed(Duration(seconds: 30));
+    }
+  }
+
   static List<String> _enteredGPSLinkIds = [];
   static List<GPSLink> _enteredGPSLink = [];
 
@@ -74,20 +90,13 @@ class LocationService {
   static void _enterArea(GPSLink gpsLink) {
     _enteredGPSLink.add(gpsLink);
     _enteredGPSLinkIds.add(gpsLink.id);
-  }
 
-  static Future<void> _loadGPSLinkLoop() async {
-    await Future.delayed(Duration(seconds: 3));
-
-    API api = API();
-    while (true) {
-      if (await API.isLogged()) {
-        var list = await api.gpslinkListNoError();
-        if (list != null) {
-          _gpslinklist = list;
-        }
-      }
-      await Future.delayed(Duration(seconds: 30));
-    }
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+          id: 10,
+          channelKey: 'basic_channel',
+          title: 'GPS Link - entrou na área ' + gpsLink.name,
+          body: 'Lembrete: ' + gpsLink.remember),
+    );
   }
 }
