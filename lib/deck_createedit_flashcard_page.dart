@@ -29,7 +29,7 @@ class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPag
     super.didChangeDependencies();
 
     _flashcard = ModalRoute.of(context).settings.arguments as Flashcard;
-    if (_flashcard != null) {
+    if (_flashcard.id != null) {
       _isedit = true;
       _txtFront.text = _flashcard.front;
       _txtBack.text = _flashcard.back;

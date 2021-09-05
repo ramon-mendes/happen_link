@@ -84,16 +84,18 @@ class _GPSLinkShowPageState extends State<GPSLinkShowPage> {
               tooltip: 'Adicionar GPSLink',
               onPressed: () async {
                 var gps = await Navigator.of(context).pushNamed(GPSLinkEditPage.routeName, arguments: _gpslink);
-                _gpslink = gps;
+                if (gps != null) {
+                  _gpslink = gps;
 
-                setState(() {
-                  final Marker marker = Marker(
-                    markerId: MarkerId("123456"),
-                    position: LatLng(_gpslink.lat, _gpslink.lng),
-                  );
-                  markers.clear();
-                  markers.add(marker);
-                });
+                  setState(() {
+                    final Marker marker = Marker(
+                      markerId: MarkerId("123456"),
+                      position: LatLng(_gpslink.lat, _gpslink.lng),
+                    );
+                    markers.clear();
+                    markers.add(marker);
+                  });
+                }
               },
             ),
           ],

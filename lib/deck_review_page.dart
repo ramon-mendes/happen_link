@@ -143,6 +143,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                             flashcards.remove(currentFlashcard);
                             factors.remove(currentFlashcard);
                             goToNextFlashcard(context);
+
+                            final snackBar = SnackBar(content: Text('Flashcard removido com sucesso.'));
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           });
                         } else {
                           var res = await Navigator.of(context)

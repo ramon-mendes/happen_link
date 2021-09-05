@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:happen_link/apimodels/gpslink.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:location/location.dart';
@@ -10,8 +9,6 @@ class LocationService {
   static List<GPSLink> _gpslinklist;
 
   static Future<void> start() async {
-    await AndroidAlarmManager.initialize();
-
     _loadGPSLinkLoop();
 
     Location location = new Location();

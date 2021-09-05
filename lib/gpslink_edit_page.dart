@@ -16,6 +16,7 @@ class _GPSLinkEditPageState extends State<GPSLinkEditPage> {
   bool _saving = false;
   bool _isedit = false;
   GPSLink _gpsLink;
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _txtName = TextEditingController();
   final TextEditingController _txtRemember = TextEditingController();
   Set<Marker> _markers = Set<Marker>();
@@ -56,7 +57,17 @@ class _GPSLinkEditPageState extends State<GPSLinkEditPage> {
             IconButton(
               icon: const Icon(Icons.save),
               onPressed: () async {
-                await _saveModel(context);
+                if (_markers.length == 0) {
+                  final snackBar = SnackBar(
+                    content: Text('Clique no mapa para definir um marcador com a região a ser monitorada.'),
+                    backgroundColor: Colors.red,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  return;
+                }
+                if (_formKey.currentState.validate()) {
+                  await _saveModel(context);
+                }
               },
             ),
           ],
@@ -64,53 +75,68 @@ class _GPSLinkEditPageState extends State<GPSLinkEditPage> {
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Nome:'),
-                SizedBox(height: 5),
-                TextFormField(
-                  controller: _txtName,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Nome:'),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    controller: _txtName,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor insira o nome';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                //
-                SizedBox(height: 15),
-                //
-                Text('Lembrete:'),
-                SizedBox(height: 5),
-                TextFormField(
-                  controller: _txtRemember,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1, //Normal textInputField will be displayed
-                  maxLines: 5, // when user presses enter it will adapt to it
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+                  //
+                  SizedBox(height: 15),
+                  //
+                  Text('Lembrete:'),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    controller: _txtRemember,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1, //Normal textInputField will be displayed
+                    maxLines: 5, // when user presses enter it will adapt to it
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor insira o lembrete';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                //
-                SizedBox(height: 15),
-                //
-                Text('Localização:'),
-                //
-                SizedBox(height: 5),
-                (_mapLoc == null
-                    ? FutureBuilder(
-                        future: _getLocation(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
-                            _mapLoc = LatLng(snapshot.data.latitude, snapshot.data.longitude);
-                            return _buildMap(_mapLoc);
-                          }
-                          return CircularProgressIndicator();
-                        },
-                      )
-                    : _buildMap(_mapLoc)),
-                //
-                SizedBox(height: 5),
-                Text('Pressione no mapa para definir a localização', style: TextStyle(color: Colors.grey)),
-              ],
+                  //
+                  SizedBox(height: 15),
+                  //
+                  Text('Localização:'),
+                  //
+                  SizedBox(height: 5),
+                  (_mapLoc == null
+                      ? FutureBuilder(
+                          future: _getLocation(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              _mapLoc = LatLng(snapshot.data.latitude, snapshot.data.longitude);
+                              return _buildMap(_mapLoc);
+                            }
+                            return CircularProgressIndicator();
+                          },
+                        )
+                      : _buildMap(_mapLoc)),
+                  //
+                  SizedBox(height: 5),
+                  Text('Pressione no mapa para definir a localização', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
             ),
           ),
         ),
