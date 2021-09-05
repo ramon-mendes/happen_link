@@ -60,13 +60,17 @@ class LocationService {
   }
 
   static void _checkLeftArea(double curLat, double curLng) {
+    var toRemove = [];
     for (var gpsLink in _enteredGPSLink) {
       double distMeters =
           mp.SphericalUtil.computeDistanceBetween(mp.LatLng(gpsLink.lat, gpsLink.lng), mp.LatLng(curLat, curLng));
       if (distMeters > gpsLink.radius) {
-        _enteredGPSLink.remove(gpsLink);
-        _enteredGPSLinkIds.remove(gpsLink.id);
+        toRemove.add(gpsLink);
       }
+    }
+    for (var gpsLink in toRemove) {
+      _enteredGPSLink.remove(gpsLink);
+      _enteredGPSLinkIds.remove(gpsLink.id);
     }
   }
 
@@ -80,9 +84,11 @@ class LocationService {
 
     API api = API();
     while (true) {
-      var list = await api.gpslinkListNoError();
-      if (list != null) {
-        _gpslinklist = list;
+      if (await API.isLogged()) {
+        var list = await api.gpslinkListNoError();
+        if (list != null) {
+          _gpslinklist = list;
+        }
       }
       await Future.delayed(Duration(seconds: 30));
     }

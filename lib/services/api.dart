@@ -240,6 +240,29 @@ class API {
     return null;
   }
 
+  Future<void> fcUpdate(Flashcard model) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final body = model.toJson();
+
+      final response = await http.post(
+        Uri.https(API_URL, "api/flashcard/update"),
+        headers: _jsonHeader(),
+        body: jsonEncode(body),
+      );
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
+
+    return null;
+  }
+
   Future<void> fcDelete(Flashcard model) async {
     if (!await _checkInternet()) throw Exception();
 

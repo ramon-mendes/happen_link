@@ -146,7 +146,11 @@ class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPag
 
     _flashcard.front = _txtFront.text;
     _flashcard.back = _txtBack.text;
-    await API.of(context).fcCreate(_flashcard);
+    if (_isedit) {
+      await API.of(context).fcUpdate(_flashcard);
+    } else {
+      await API.of(context).fcCreate(_flashcard);
+    }
 
     final snackBar =
         SnackBar(content: Text(_isedit ? 'Flashcard salvo com sucesso.' : 'Flashcard criado com sucesso.'));
