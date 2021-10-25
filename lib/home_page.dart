@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-      Navigator.of(context).pushNamed(GPSLinkShowPage.routeName, arguments: {id: receivedNotification.id});
+      Navigator.of(context).pushNamed(GPSLinkShowPage.routeName, arguments: {"id": receivedNotification.id});
     });
   }
 

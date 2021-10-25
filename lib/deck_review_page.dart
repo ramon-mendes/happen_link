@@ -16,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 import 'consts.dart' as Consts;
 import 'deck_createedit_flashcard_page.dart';
+import 'decks_page.dart';
 
 class DeckReviewPage extends StatefulWidget {
   static const routeName = '/deckreviewpage';
@@ -37,7 +38,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     API.of(context).fcGetReviewList(deck.id).then((review) {
       if (review.flashcards.length == 0) {
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DeckShowPage.routeName));
+            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DecksPage.routeName));
         return;
       }
 
@@ -66,7 +67,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
       // go to ReviewDone page
       API.of(context).fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DeckShowPage.routeName));
+            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DecksPage.routeName));
       });
     } else {
       // show next flashcard

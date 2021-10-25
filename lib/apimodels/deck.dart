@@ -5,6 +5,7 @@ class Deck {
   int cntNew;
   int cntOld;
   bool fromUser;
+  bool allReview;
 
   Deck({this.id, this.companyId, this.title, this.cntNew, this.cntOld, this.fromUser});
 
@@ -15,6 +16,7 @@ class Deck {
     cntNew = json['cntNew'];
     cntOld = json['cntOld'];
     fromUser = json['fromUser'];
+    allReview = json['allReview'];
   }
 
   Map<String, dynamic> toJson() {

@@ -5,6 +5,7 @@ import 'package:happen_link/services/api.dart';
 import 'package:happen_link/color_loader_4.dart';
 
 import 'apimodels/deck.dart';
+import 'deck_review_page.dart';
 
 class DecksPage extends StatefulWidget {
   static const routeName = '/deckspage';
@@ -62,7 +63,7 @@ class _DecksPageState extends State<DecksPage> {
         height: 1,
       ),
       itemCount: _cache.length,
-      itemBuilder: (BuildContext context, int index) => _buildListItem(_cache[index], context),
+      itemBuilder: (BuildContext context, int index) => _cache[index].allReview ? _buildAllReviewListItem(_cache[index], context) : _buildListItem(_cache[index], context),
     );
   }
 
@@ -88,6 +89,60 @@ class _DecksPageState extends State<DecksPage> {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          'Cartas novas: ',
+                          style: TextStyle(color: Color(0xff7E7E7E)),
+                        ),
+                        Text(
+                          '${deck.cntNew}',
+                          style: TextStyle(color: Color(0xff3c2dc4)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          'Cartas antigas: ',
+                          style: TextStyle(color: Color(0xff7E7E7E)),
+                        ),
+                        Text(
+                          '${deck.cntOld}',
+                          style: TextStyle(color: Color(0xffc42d2d)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAllReviewListItem(Deck deck, BuildContext context) {return InkWell(
+      onTap: () async {
+        await Navigator.of(context).pushNamed(DeckReviewPage.routeName, arguments: deck);
+        _reloadData();
+      },
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(13.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Revisar todos os decks', style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, color: Colors.blueAccent)),
               SizedBox(
                 height: 10,
               ),
