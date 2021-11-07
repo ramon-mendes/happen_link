@@ -15,15 +15,16 @@ import 'package:happen_link/home_page.dart';
 import 'package:happen_link/login_page.dart';
 import 'package:happen_link/procedure_page.dart';
 import 'package:happen_link/procedure_show_page.dart';
+import 'package:happen_link/share_target_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:happen_link/services/location_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:happen_link/share_target_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await LocationService.start();
+
+  /*await LocationService.start();
 
   AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
@@ -42,7 +43,7 @@ void main() async {
     if (!isAllowed) {
       AwesomeNotifications().requestPermissionToSendNotifications();
     }
-  });
+  });*/
 
   var isLogged = await API.isLogged();
 

@@ -9,7 +9,6 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'apimodels/deck.dart';
 import 'color_loader_4.dart';
-import 'home_page.dart';
 
 class ShareTargetPage extends StatefulWidget {
   static const routeName = '/sharetargetpage';

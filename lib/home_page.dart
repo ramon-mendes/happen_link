@@ -33,7 +33,8 @@ class _HomePageState extends State<HomePage> {
     });
 
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-      Navigator.of(context).pushNamed(GPSLinkShowPage.routeName, arguments: {"id": receivedNotification.id});
+      Navigator.of(context).pushNamed(GPSLinkShowPage.routeName,
+          arguments: {"id": receivedNotification.id});
     });
   }
 
@@ -81,14 +82,17 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             'Decks',
-                            style: TextStyle(fontSize: 20, color: Consts.LOGIN_TXT_COLOR),
+                            style: TextStyle(
+                                fontSize: 20, color: Consts.LOGIN_TXT_COLOR),
                           ),
                           SizedBox(
                             height: 8,
                           ),
                           Text('Flashcards para você revisar seu conhecimento',
-                              style:
-                                  TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Consts.LOGIN_TXT_COLOR)),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Consts.LOGIN_TXT_COLOR)),
                         ],
                       ),
                     ),
@@ -115,13 +119,17 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Procedimentos', style: TextStyle(fontSize: 20, color: Consts.LOGIN_TXT_COLOR)),
+                          Text('Procedimentos',
+                              style: TextStyle(
+                                  fontSize: 20, color: Consts.LOGIN_TXT_COLOR)),
                           SizedBox(
                             height: 8,
                           ),
                           Text('Instruções passo-a-passo de tarefas conhecidas',
-                              style:
-                                  TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Consts.LOGIN_TXT_COLOR)),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Consts.LOGIN_TXT_COLOR)),
                         ],
                       ),
                     ),
@@ -131,6 +139,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 8,
               ),
+              /*
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -161,19 +170,21 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Text(''),
-              ),
+              */
+              Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(_versionCode, style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
+                  Text(_versionCode,
+                      style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
                   GestureDetector(
                     onTap: () async {
                       await API.logout();
-                      Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+                      Navigator.of(context)
+                          .pushReplacementNamed(LoginPage.routeName);
                     },
-                    child: Text('Logout', style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
+                    child: Text('Logout',
+                        style: TextStyle(color: Consts.LOGIN_TXT_COLOR)),
                   )
                 ],
               ),
