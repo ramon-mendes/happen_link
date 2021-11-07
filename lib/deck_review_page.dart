@@ -1,22 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/deck.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
 import 'package:happen_link/apimodels/review.dart';
 import 'package:happen_link/classes/sm.dart';
 import 'package:happen_link/deck_review_done.dart';
-import 'package:happen_link/deck_show_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+import 'package:photo_view/photo_view.dart';
 import 'dart:math';
 import 'consts.dart' as Consts;
 import 'deck_createedit_flashcard_page.dart';
 import 'decks_page.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class DeckReviewPage extends StatefulWidget {
   static const routeName = '/deckreviewpage';
@@ -28,17 +29,19 @@ class DeckReviewPage extends StatefulWidget {
 class _DeckReviewPageState extends State<DeckReviewPage> {
   Flashcard currentFlashcard;
   List<Flashcard> flashcards;
-  Map<Flashcard, FlahscardReviewFactor> factors = new Map<Flashcard, FlahscardReviewFactor>();
+  Map<Flashcard, FlahscardReviewFactor> factors =
+      new Map<Flashcard, FlahscardReviewFactor>();
   bool loading = true;
+  bool loaded = false;
   bool frontView = true;
   Deck deck;
   Random rng = new Random();
 
-  void loadReviewList(BuildContext context) {
+  void _loadReviewList(BuildContext context) {
     API.of(context).fcGetReviewList(deck.id).then((review) {
       if (review.flashcards.length == 0) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DecksPage.routeName));
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            DeckReviewDone.routeName, ModalRoute.withName(DecksPage.routeName));
         return;
       }
 
@@ -57,17 +60,24 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
       }
 
       loading = false; // for next
-      goToNextFlashcard(context);
+      _goToNextFlashcard(context);
     });
   }
 
-  void goToNextFlashcard(BuildContext context) {
-    currentFlashcard = getNextFlashcard();
+  void _goToNextFlashcard(BuildContext context) {
+    currentFlashcard = _getNextFlashcard();
     if (currentFlashcard == null) {
+      setState(() {
+        this.loading = true;
+      });
+
       // go to ReviewDone page
-      API.of(context).fcCommitReview(new ReviewCommit(flashcards, factors.values.toList())).then((value) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(DeckReviewDone.routeName, ModalRoute.withName(DecksPage.routeName));
+      API
+          .of(context)
+          .fcCommitReview(new ReviewCommit(flashcards, factors.values.toList()))
+          .then((value) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            DeckReviewDone.routeName, ModalRoute.withName(DecksPage.routeName));
       });
     } else {
       // show next flashcard
@@ -77,14 +87,14 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     }
   }
 
-  Flashcard getNextFlashcard() {
+  Flashcard _getNextFlashcard() {
     if (factors.length == 0) return null;
 
     var filtered = factors.entries.toList();
 
     filtered = factors.entries.where((element) {
-      var date =
-          DateTime(element.value.dtLastReview.year, element.value.dtLastReview.month, element.value.dtLastReview.day);
+      var date = DateTime(element.value.dtLastReview.year,
+          element.value.dtLastReview.month, element.value.dtLastReview.day);
       date = date.add(Duration(days: element.value.interval));
       return date.isBefore(DateTime.now()) || element.value.interval == 0;
     }).toList();
@@ -98,10 +108,11 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     }
   }
 
-  void reviewFlashcard(int quality) {
+  void _reviewFlashcard(int quality) {
     assert(currentFlashcard != null);
     var review = factors[currentFlashcard];
-    var result = SM.calc(quality, review.repetitions, review.interval, review.easeFactor);
+    var result = SM.calc(
+        quality, review.repetitions, review.interval, review.easeFactor);
     review.easeFactor = result.easeFactor;
     review.interval = result.interval;
     review.repetitions = result.repetitions;
@@ -109,13 +120,20 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    deck = ModalRoute.of(context).settings.arguments as Deck;
+  void didChangeDependencies() {
+    if (!loaded) {
+      loaded = true;
+      deck = ModalRoute.of(context).settings.arguments as Deck;
+      _loadReviewList(context);
+    }
 
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Loading
     if (loading) {
-      loadReviewList(context);
-
       return LoadingOverlay(
         isLoading: true,
         progressIndicator: Consts.LOADING_INDICATOR,
@@ -140,17 +158,24 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                       child: new Icon(Icons.arrow_drop_down),
                       onSelected: (choice) async {
                         if (choice == 'rmv') {
-                          API.of(context).fcDelete(currentFlashcard).then((value) {
+                          API
+                              .of(context)
+                              .fcDelete(currentFlashcard)
+                              .then((value) {
                             flashcards.remove(currentFlashcard);
                             factors.remove(currentFlashcard);
-                            goToNextFlashcard(context);
+                            _goToNextFlashcard(context);
 
-                            final snackBar = SnackBar(content: Text('Flashcard removido com sucesso.'));
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            final snackBar = SnackBar(
+                                content:
+                                    Text('Flashcard removido com sucesso.'));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
                           });
                         } else {
-                          var res = await Navigator.of(context)
-                              .pushNamed(DeckCreateEditFlashcardPage.routeName, arguments: currentFlashcard);
+                          var res = await Navigator.of(context).pushNamed(
+                              DeckCreateEditFlashcardPage.routeName,
+                              arguments: currentFlashcard);
                           if (res != null) {
                             setState(() {
                               currentFlashcard = res;
@@ -201,7 +226,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                   ),
                   currentFlashcard.media.imagesFrontURL.length == 0
                       ? Container()
-                      : _imagesCarousel(currentFlashcard.media.imagesFrontURL),
+                      : Expanded(
+                          child: _imagesCarousel(
+                              currentFlashcard.media.imagesFrontURL)),
                 ],
               ),
             ),
@@ -249,7 +276,9 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                   ),
                   currentFlashcard.media.imagesBackURL.length == 0
                       ? Container()
-                      : _imagesCarousel(currentFlashcard.media.imagesBackURL),
+                      : Expanded(
+                          child: _imagesCarousel(
+                              currentFlashcard.media.imagesBackURL)),
                   FutureBuilder(
                       future: _audioPlayer(),
                       builder: (context, snapshot) {
@@ -274,16 +303,21 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                       padding: const EdgeInsets.all(9.0),
                       child: Column(
                         children: [
-                          Text('< 1 min', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          Text('< 1 min',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13)),
                           SizedBox(height: 2),
-                          Text('NOVAMENTE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text('NOVAMENTE',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
                     onTap: () {
                       if (currentFlashcard == null) return;
-                      reviewFlashcard(0);
-                      goToNextFlashcard(context);
+                      _reviewFlashcard(0);
+                      _goToNextFlashcard(context);
                     },
                   ),
                 ),
@@ -296,16 +330,21 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                       padding: const EdgeInsets.all(9.0),
                       child: Column(
                         children: [
-                          Text('< 10 min', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          Text('< 10 min',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13)),
                           SizedBox(height: 2),
-                          Text('BOM', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text('BOM',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
                     onTap: () {
                       if (currentFlashcard == null) return;
-                      reviewFlashcard(3);
-                      goToNextFlashcard(context);
+                      _reviewFlashcard(3);
+                      _goToNextFlashcard(context);
                     },
                   ),
                 ),
@@ -318,16 +357,21 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                       padding: const EdgeInsets.all(9.0),
                       child: Column(
                         children: [
-                          Text('4 d', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          Text('4 d',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13)),
                           SizedBox(height: 2),
-                          Text('FÁCIL', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text('FÁCIL',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
                     onTap: () {
                       if (currentFlashcard == null) return;
-                      reviewFlashcard(5);
-                      goToNextFlashcard(context);
+                      _reviewFlashcard(5);
+                      _goToNextFlashcard(context);
                     },
                   ),
                 ),
@@ -340,6 +384,32 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
   }
 
   Widget _imagesCarousel(List<String> imgs) {
+    return Container(
+        child: PhotoViewGallery.builder(
+      scrollPhysics: const BouncingScrollPhysics(),
+      builder: (BuildContext context, int index) {
+        return PhotoViewGalleryPageOptions(
+          imageProvider: NetworkImage(imgs[index]),
+          initialScale: PhotoViewComputedScale.contained * 0.8,
+        );
+      },
+      itemCount: imgs.length,
+      loadingBuilder: (context, event) => Center(
+        child: Container(
+          width: 20.0,
+          height: 20.0,
+          child: CircularProgressIndicator(
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+          ),
+        ),
+      ),
+      backgroundDecoration: BoxDecoration(color: Colors.transparent),
+    ));
+  }
+
+  /*Widget _imagesCarousel(List<String> imgs) {
     return SizedBox(
       child: CarouselSlider(
         items: imgs
@@ -355,7 +425,7 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
         ),
       ),
     );
-  }
+  }*/
 
   AudioPlayer _player;
 
@@ -363,8 +433,12 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     if (currentFlashcard.media.audioBase64 != null) {
       _player = AudioPlayer();
       final dir = await getApplicationDocumentsDirectory();
-      final path = dir.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.m4a';
-      File(path).writeAsBytes(base64.decode(currentFlashcard.media.audioBase64));
+      final path = dir.path +
+          '/' +
+          DateTime.now().millisecondsSinceEpoch.toString() +
+          '.m4a';
+      File(path)
+          .writeAsBytes(base64.decode(currentFlashcard.media.audioBase64));
       await _player.setFilePath(path);
 
       // play control logic
@@ -385,7 +459,8 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
         child: Material(
           color: color,
           child: InkWell(
-            child: SizedBox(width: _controlSize, height: _controlSize, child: icon),
+            child: SizedBox(
+                width: _controlSize, height: _controlSize, child: icon),
             onTap: () {
               if (_player.playerState.playing) {
                 _player.pause();

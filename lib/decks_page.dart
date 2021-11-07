@@ -63,14 +63,17 @@ class _DecksPageState extends State<DecksPage> {
         height: 1,
       ),
       itemCount: _cache.length,
-      itemBuilder: (BuildContext context, int index) => _cache[index].allReview ? _buildAllReviewListItem(_cache[index], context) : _buildListItem(_cache[index], context),
+      itemBuilder: (BuildContext context, int index) => _cache[index].allReview
+          ? _buildAllReviewListItem(_cache[index], context)
+          : _buildListItem(_cache[index], context),
     );
   }
 
   Widget _buildListItem(Deck deck, BuildContext context) {
     return InkWell(
       onTap: () async {
-        await Navigator.of(context).pushNamed(DeckShowPage.routeName, arguments: deck);
+        await Navigator.of(context)
+            .pushNamed(DeckShowPage.routeName, arguments: deck);
         _reloadData();
       },
       child: Container(
@@ -81,7 +84,8 @@ class _DecksPageState extends State<DecksPage> {
             children: [
               Row(
                 children: [
-                  Text(deck.title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(deck.title,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(width: 6),
                   Icon(
                     deck.fromUser ? Icons.person : Icons.share,
@@ -131,9 +135,11 @@ class _DecksPageState extends State<DecksPage> {
     );
   }
 
-  Widget _buildAllReviewListItem(Deck deck, BuildContext context) {return InkWell(
+  Widget _buildAllReviewListItem(Deck deck, BuildContext context) {
+    return InkWell(
       onTap: () async {
-        await Navigator.of(context).pushNamed(DeckReviewPage.routeName, arguments: deck);
+        await Navigator.of(context)
+            .pushNamed(DeckReviewPage.routeName, arguments: deck);
         _reloadData();
       },
       child: Container(
@@ -142,7 +148,11 @@ class _DecksPageState extends State<DecksPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Revisar todos os decks', style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, color: Colors.blueAccent)),
+              Text('Revisar todos os decks',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.blueAccent)),
               SizedBox(
                 height: 10,
               ),

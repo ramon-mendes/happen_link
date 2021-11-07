@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:happen_link/deck_add_page.dart';
 import 'package:happen_link/deck_audio_edit_page.dart';
@@ -16,6 +18,8 @@ import 'package:happen_link/procedure_show_page.dart';
 import 'package:happen_link/services/api.dart';
 import 'package:happen_link/services/location_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:happen_link/share_target_page.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,30 +51,74 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final String initialRoute;
-
   MyApp({this.initialRoute});
+
+  @override
+  _MyAppState createState() => _MyAppState(this.initialRoute);
+}
+
+class _MyAppState extends State<MyApp> {
+  String initialRoute;
+  StreamSubscription _intentDataStreamSubscription;
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
+
+  _MyAppState(this.initialRoute);
+
+  @override
+  void initState() {
+    super.initState();
+
+    // For sharing images coming from outside the app while the app is in the memory
+    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+        .listen((List<SharedMediaFile> value) {
+      navigatorKey.currentState
+          .pushNamed(ShareTargetPage.routeName, arguments: value);
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      if (value.length != 0) {
+        navigatorKey.currentState
+            .pushNamed(ShareTargetPage.routeName, arguments: value);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _intentDataStreamSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Happen Link',
       theme: ThemeData(primarySwatch: Colors.teal, accentColor: Colors.black),
       initialRoute: initialRoute,
       debugShowCheckedModeBanner: false,
       routes: {
         LoginPage.routeName: (BuildContext context) => LoginPage(),
+        ShareTargetPage.routeName: (BuildContext context) => ShareTargetPage(),
         HomePage.routeName: (BuildContext context) => HomePage(),
         DecksPage.routeName: (BuildContext context) => DecksPage(),
         ProcedurePage.routeName: (BuildContext context) => ProcedurePage(),
-        ProcedureShowPage.routeName: (BuildContext context) => ProcedureShowPage(),
+        ProcedureShowPage.routeName: (BuildContext context) =>
+            ProcedureShowPage(),
         DeckAddPage.routeName: (BuildContext context) => DeckAddPage(),
         DeckShowPage.routeName: (BuildContext context) => DeckShowPage(),
         DeckReviewPage.routeName: (BuildContext context) => DeckReviewPage(),
         DeckReviewDone.routeName: (BuildContext context) => DeckReviewDone(),
-        DeckCreateEditFlashcardPage.routeName: (BuildContext context) => DeckCreateEditFlashcardPage(),
-        DeckAudioEditPage.routeName: (BuildContext context) => DeckAudioEditPage(),
+        DeckCreateEditFlashcardPage.routeName: (BuildContext context) =>
+            DeckCreateEditFlashcardPage(),
+        DeckAudioEditPage.routeName: (BuildContext context) =>
+            DeckAudioEditPage(),
         GPSLinkPage.routeName: (BuildContext context) => GPSLinkPage(),
         GPSLinkEditPage.routeName: (BuildContext context) => GPSLinkEditPage(),
         GPSLinkShowPage.routeName: (BuildContext context) => GPSLinkShowPage(),

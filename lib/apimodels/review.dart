@@ -57,13 +57,14 @@ class FlahscardReviewFactor {
   int repetitions;
   double easeFactor;
 
-  FlahscardReviewFactor({this.dtLastReview, this.interval, this.repetitions, this.easeFactor});
+  FlahscardReviewFactor(
+      {this.dtLastReview, this.interval, this.repetitions, this.easeFactor});
 
   FlahscardReviewFactor.fromJson(Map<String, dynamic> json) {
     dtLastReview = DateTime.parse(json['dtLastReview']);
     interval = json['interval'];
     repetitions = json['repetitions'];
-    easeFactor = json['easeFactor'];
+    easeFactor = json['easeFactor'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
