@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/gpslink.dart';
-import 'package:happen_link/color_loader_4.dart';
 import 'package:happen_link/gpslink_edit_page.dart';
 import 'package:happen_link/gpslink_show_page.dart';
 import 'package:happen_link/services/api.dart';
+import 'package:happen_link/widgets/color_loader_4.dart';
 
 class GPSLinkPage extends StatefulWidget {
   static const routeName = '/gpslinkpage';
@@ -73,7 +73,8 @@ class _GPSLinkPageState extends State<GPSLinkPage> {
                   height: 1,
                 ),
                 itemCount: _cache.length,
-                itemBuilder: (BuildContext context, int index) => _buildListItem(_cache[index], context),
+                itemBuilder: (BuildContext context, int index) =>
+                    _buildListItem(_cache[index], context),
               ),
             ),
           ),
@@ -86,7 +87,8 @@ class _GPSLinkPageState extends State<GPSLinkPage> {
     return Material(
       child: InkWell(
         onTap: () async {
-          await Navigator.of(context).pushNamed(GPSLinkShowPage.routeName, arguments: gpsLink);
+          await Navigator.of(context)
+              .pushNamed(GPSLinkShowPage.routeName, arguments: gpsLink);
           _reloadData();
         },
         child: Padding(

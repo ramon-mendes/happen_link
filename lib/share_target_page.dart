@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/flashcard.dart';
 import 'package:happen_link/services/api.dart';
+import 'package:happen_link/widgets/color_loader_4.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'apimodels/deck.dart';
-import 'color_loader_4.dart';
 
 class ShareTargetPage extends StatefulWidget {
   static const routeName = '/sharetargetpage';

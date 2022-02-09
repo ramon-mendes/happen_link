@@ -23,7 +23,8 @@ class ColorLoader4 extends StatefulWidget {
   _ColorLoader4State createState() => _ColorLoader4State();
 }
 
-class _ColorLoader4State extends State<ColorLoader4> with SingleTickerProviderStateMixin {
+class _ColorLoader4State extends State<ColorLoader4>
+    with SingleTickerProviderStateMixin {
   Animation<double> animation_1;
   Animation<double> animation_2;
   Animation<double> animation_3;
@@ -74,7 +75,10 @@ class _ColorLoader4State extends State<ColorLoader4> with SingleTickerProviderSt
           new Transform.translate(
             offset: Offset(
               0.0,
-              -30 * (animation_1.value <= 0.50 ? animation_1.value : 1.0 - animation_1.value),
+              -30 *
+                  (animation_1.value <= 0.50
+                      ? animation_1.value
+                      : 1.0 - animation_1.value),
             ),
             child: new Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -89,7 +93,10 @@ class _ColorLoader4State extends State<ColorLoader4> with SingleTickerProviderSt
           Transform.translate(
             offset: Offset(
               0.0,
-              -30 * (animation_2.value <= 0.50 ? animation_2.value : 1.0 - animation_2.value),
+              -30 *
+                  (animation_2.value <= 0.50
+                      ? animation_2.value
+                      : 1.0 - animation_2.value),
             ),
             child: new Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -104,7 +111,10 @@ class _ColorLoader4State extends State<ColorLoader4> with SingleTickerProviderSt
           Transform.translate(
             offset: Offset(
               0.0,
-              -30 * (animation_3.value <= 0.50 ? animation_3.value : 1.0 - animation_3.value),
+              -30 *
+                  (animation_3.value <= 0.50
+                      ? animation_3.value
+                      : 1.0 - animation_3.value),
             ),
             child: new Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -150,8 +160,11 @@ class Dot extends StatelessWidget {
               child: Container(
                 width: radius,
                 height: radius,
-                decoration:
-                    BoxDecoration(color: color, shape: type == DotType.circle ? BoxShape.circle : BoxShape.rectangle),
+                decoration: BoxDecoration(
+                    color: color,
+                    shape: type == DotType.circle
+                        ? BoxShape.circle
+                        : BoxShape.rectangle),
               ),
             ),
     );

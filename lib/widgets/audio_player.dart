@@ -31,14 +31,17 @@ class AudioPlayerState extends State<AudioPlayer> {
 
   @override
   void initState() {
-    _playerStateChangedSubscription = _audioPlayer.playerStateStream.listen((state) async {
+    _playerStateChangedSubscription =
+        _audioPlayer.playerStateStream.listen((state) async {
       if (state.processingState == ap.ProcessingState.completed) {
         await stop();
       }
       setState(() {});
     });
-    _positionChangedSubscription = _audioPlayer.positionStream.listen((position) => setState(() {}));
-    _durationChangedSubscription = _audioPlayer.durationStream.listen((duration) => setState(() {}));
+    _positionChangedSubscription =
+        _audioPlayer.positionStream.listen((position) => setState(() {}));
+    _durationChangedSubscription =
+        _audioPlayer.durationStream.listen((duration) => setState(() {}));
     _init();
 
     super.initState();
@@ -68,7 +71,8 @@ class AudioPlayerState extends State<AudioPlayer> {
             _buildControl(),
             _buildSlider(constraints.maxWidth),
             IconButton(
-              icon: Icon(Icons.delete, color: const Color(0xFF73748D), size: _deleteBtnSize),
+              icon: Icon(Icons.delete,
+                  color: const Color(0xFF73748D), size: _deleteBtnSize),
               onPressed: () {
                 _audioPlayer.stop().then((value) => widget.onDelete());
               },
@@ -96,7 +100,8 @@ class AudioPlayerState extends State<AudioPlayer> {
       child: Material(
         color: color,
         child: InkWell(
-          child: SizedBox(width: _controlSize, height: _controlSize, child: icon),
+          child:
+              SizedBox(width: _controlSize, height: _controlSize, child: icon),
           onTap: () {
             if (_audioPlayer.playerState.playing) {
               pause();
@@ -132,7 +137,9 @@ class AudioPlayerState extends State<AudioPlayer> {
             _audioPlayer.seek(Duration(milliseconds: position.round()));
           }
         },
-        value: canSetValue && duration != null ? position.inMilliseconds / duration.inMilliseconds : 0.0,
+        value: canSetValue && duration != null
+            ? position.inMilliseconds / duration.inMilliseconds
+            : 0.0,
       ),
     );
   }

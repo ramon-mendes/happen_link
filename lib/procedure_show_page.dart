@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:happen_link/apimodels/procedure.dart';
 import 'package:happen_link/apimodels/procedureitem.dart';
-import 'package:happen_link/color_loader_4.dart';
 import 'package:happen_link/procedure_flashcard.dart';
 import 'package:happen_link/services/api.dart';
+import 'package:happen_link/widgets/color_loader_4.dart';
 
 class ProcedureShowPage extends StatefulWidget {
   static const routeName = '/procedureshowpage';
@@ -125,7 +125,8 @@ ${item.step.html}
 
   void _goPrevSlide() {
     _idx--;
-    _ctrl.previousPage(duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+    _ctrl.previousPage(
+        duration: Duration(milliseconds: 400), curve: Curves.easeIn);
     setState(() {});
   }
 }

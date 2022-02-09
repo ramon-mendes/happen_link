@@ -17,7 +17,6 @@ import 'dart:math';
 import 'consts.dart' as Consts;
 import 'deck_createedit_flashcard_page.dart';
 import 'decks_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class DeckReviewPage extends StatefulWidget {
   static const routeName = '/deckreviewpage';
@@ -142,66 +141,68 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
     }
 
     return Material(
-      child: Stack(
-        children: [
-          _getMainView(),
-          Positioned(
-            top: 28,
-            right: 4,
-            child: ClipOval(
-              child: Material(
-                child: InkWell(
-                  child: SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: PopupMenuButton(
-                      child: new Icon(Icons.arrow_drop_down),
-                      onSelected: (choice) async {
-                        if (choice == 'rmv') {
-                          API
-                              .of(context)
-                              .fcDelete(currentFlashcard)
-                              .then((value) {
-                            flashcards.remove(currentFlashcard);
-                            factors.remove(currentFlashcard);
-                            _goToNextFlashcard(context);
+      child: SafeArea(
+        child: Stack(
+          children: [
+            _getMainView(),
+            Positioned(
+              top: -1,
+              right: 4,
+              child: ClipOval(
+                child: Material(
+                  child: InkWell(
+                    child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: PopupMenuButton(
+                        child: new Icon(Icons.arrow_drop_down),
+                        onSelected: (choice) async {
+                          if (choice == 'rmv') {
+                            API
+                                .of(context)
+                                .fcDelete(currentFlashcard)
+                                .then((value) {
+                              flashcards.remove(currentFlashcard);
+                              factors.remove(currentFlashcard);
+                              _goToNextFlashcard(context);
 
-                            final snackBar = SnackBar(
-                                content:
-                                    Text('Flashcard removido com sucesso.'));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          });
-                        } else {
-                          var res = await Navigator.of(context).pushNamed(
-                              DeckCreateEditFlashcardPage.routeName,
-                              arguments: currentFlashcard);
-                          if (res != null) {
-                            setState(() {
-                              currentFlashcard = res;
+                              final snackBar = SnackBar(
+                                  content:
+                                      Text('Flashcard removido com sucesso.'));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             });
+                          } else {
+                            var res = await Navigator.of(context).pushNamed(
+                                DeckCreateEditFlashcardPage.routeName,
+                                arguments: currentFlashcard);
+                            if (res != null) {
+                              setState(() {
+                                currentFlashcard = res;
+                              });
+                            }
                           }
-                        }
-                      },
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            value: 'rmv',
-                            child: Text('Remover flashcard'),
-                          ),
-                          PopupMenuItem(
-                            value: 'edit',
-                            child: Text('Editar flashcard'),
-                          ),
-                        ];
-                      },
+                        },
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              value: 'rmv',
+                              child: Text('Remover flashcard'),
+                            ),
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: Text('Editar flashcard'),
+                            ),
+                          ];
+                        },
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -218,10 +219,13 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      currentFlashcard.front ?? '',
-                      textAlign: TextAlign.center,
+                    padding: const EdgeInsets.all(28.0),
+                    child: Visibility(
+                      visible: currentFlashcard.front != null,
+                      child: Text(
+                        currentFlashcard.front,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   currentFlashcard.media.imagesFrontURL.length == 0
@@ -267,11 +271,13 @@ class _DeckReviewPageState extends State<DeckReviewPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      currentFlashcard.back ?? '',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+                    padding: const EdgeInsets.all(28.0),
+                    child: Visibility(
+                      visible: currentFlashcard.back != null,
+                      child: Text(
+                        currentFlashcard.back,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   currentFlashcard.media.imagesBackURL.length == 0

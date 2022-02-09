@@ -17,8 +17,6 @@ import 'package:happen_link/procedure_page.dart';
 import 'package:happen_link/procedure_show_page.dart';
 import 'package:happen_link/share_target_page.dart';
 import 'package:happen_link/services/api.dart';
-import 'package:happen_link/services/location_service.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 void main() async {

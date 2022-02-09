@@ -14,10 +14,12 @@ class DeckCreateEditFlashcardPage extends StatefulWidget {
   static const routeName = '/deckcreateeditflashcard';
 
   @override
-  _DeckCreateEditFlashcardPageState createState() => _DeckCreateEditFlashcardPageState();
+  _DeckCreateEditFlashcardPageState createState() =>
+      _DeckCreateEditFlashcardPageState();
 }
 
-class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPage> {
+class _DeckCreateEditFlashcardPageState
+    extends State<DeckCreateEditFlashcardPage> {
   bool _saving = false;
   bool _isedit = false;
   Flashcard _flashcard;
@@ -128,7 +130,8 @@ class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPag
                 ElevatedButton(
                   child: Text('Gravação/reprodução'),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(DeckAudioEditPage.routeName, arguments: _flashcard);
+                    Navigator.of(context).pushNamed(DeckAudioEditPage.routeName,
+                        arguments: _flashcard);
                   },
                 )
               ],
@@ -152,8 +155,10 @@ class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPag
       await API.of(context).fcCreate(_flashcard);
     }
 
-    final snackBar =
-        SnackBar(content: Text(_isedit ? 'Flashcard salvo com sucesso.' : 'Flashcard criado com sucesso.'));
+    final snackBar = SnackBar(
+        content: Text(_isedit
+            ? 'Flashcard salvo com sucesso.'
+            : 'Flashcard criado com sucesso.'));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
     Navigator.of(context).pop(_flashcard);
@@ -162,7 +167,9 @@ class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPag
   List<Widget> _getGridImages(bool front) {
     List<Widget> widgets = <Widget>[];
 
-    var imgs = front ? this._flashcard.media.imagesFrontURL : this._flashcard.media.imagesBackURL;
+    var imgs = front
+        ? this._flashcard.media.imagesFrontURL
+        : this._flashcard.media.imagesBackURL;
     widgets.addAll(imgs.map((url) => _GridImage(
           url: url,
         )));
@@ -186,13 +193,15 @@ class _DeckCreateEditFlashcardPageState extends State<DeckCreateEditFlashcardPag
   final picker = ImagePicker();
 
   Future<String> _imgFromCamera() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera, imageQuality: 80);
+    final pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 80);
     if (pickedFile == null) return null;
     return _file2base64(File(pickedFile.path));
   }
 
   Future<String> _imgFromGallery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery, imageQuality: 80);
+    final pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 80);
     if (pickedFile == null) return null;
     return _file2base64(File(pickedFile.path));
   }

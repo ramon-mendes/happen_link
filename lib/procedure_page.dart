@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:happen_link/apimodels/procedure.dart';
-import 'package:happen_link/color_loader_4.dart';
 import 'package:happen_link/procedure_show_page.dart';
 import 'package:happen_link/services/api.dart';
+import 'package:happen_link/widgets/color_loader_4.dart';
 
 class ProcedurePage extends StatefulWidget {
   static const routeName = '/procedurespage';
@@ -62,7 +62,8 @@ class _ProcedurePageState extends State<ProcedurePage> {
                   height: 1,
                 ),
                 itemCount: _cache.length,
-                itemBuilder: (BuildContext context, int index) => _buildListItem(_cache[index], context),
+                itemBuilder: (BuildContext context, int index) =>
+                    _buildListItem(_cache[index], context),
               ),
             ),
           ),
@@ -75,7 +76,8 @@ class _ProcedurePageState extends State<ProcedurePage> {
     return Material(
       child: InkWell(
         onTap: () async {
-          await Navigator.of(context).pushNamed(ProcedureShowPage.routeName, arguments: procedure);
+          await Navigator.of(context)
+              .pushNamed(ProcedureShowPage.routeName, arguments: procedure);
         },
         child: Padding(
           padding: EdgeInsets.all(15),

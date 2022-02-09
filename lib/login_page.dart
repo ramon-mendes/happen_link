@@ -4,6 +4,7 @@ import 'package:happen_link/services/api.dart';
 import 'package:happen_link/widgets/password_field.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'consts.dart' as Consts;
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/loginpage';
@@ -16,8 +17,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController ctrlEmail = TextEditingController();
   final TextEditingController ctrlPwd = TextEditingController();
   bool _saving = false;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   void loginClicked() async {
+    try {
+      var res = await _googleSignIn.signIn();
+      int a = 123;
+    } catch (error) {
+      print(error);
+    }
+    return;
+
     setState(() {
       this._saving = true;
     });

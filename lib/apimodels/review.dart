@@ -28,7 +28,7 @@ class ReviewList {
     if (json['flashcards'] != null) {
       flashcards = <Flashcard>[];
       json['flashcards'].forEach((v) {
-        flashcards.add(new Flashcard.fromJson(v));
+        flashcards.add(Flashcard.fromJson(v));
       });
     }
     if (json['factors'] != null) {
